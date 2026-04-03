@@ -1,200 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Java Adventure</title>
-<style>
-  body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(to bottom, #a0eaff, #ffffff);
-  }
-
-  /* 隐藏所有页面 */
-  .page {
-    display: none;
-    padding: 40px;
-  }
-
-  /* 封面样式 */
-  #cover {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(to bottom, #fffae6, #ffd6d6);
-    text-align: center;
-  }
-  #cover h1 {
-    font-size: 4em;
-    color: #ff6f61;
-    margin-bottom: 20px;
-    animation: bounce 2s infinite;
-  }
-  #startButton {
-    padding: 20px 40px;
-    font-size: 1.5em;
-    background-color: #ff6f61;
-    color: white;
-    border: none;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  #startButton:hover {
-    transform: scale(1.1);
-  }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-  }
-
-  /* 地图样式 */
-  #map {
-    text-align: center;
-  }
-  .level {
-    display: inline-block;
-    width: 80px;
-    height: 80px;
-    margin: 20px;
-    border-radius: 50%;
-    background-color: gray;
-    line-height: 80px;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s;
-    position: relative;
-  }
-  .level.completed {
-    background-color: #4CAF50;
-    box-shadow: 0 0 15px gold;
-  }
-  .level.locked {
-    background-color: #aaa;
-    cursor: not-allowed;
-  }
-  .star {
-    position: absolute;
-    top: -15px;
-    right: -15px;
-    width: 20px;
-    height: 20px;
-    background: gold;
-    clip-path: polygon(
-      50% 0%, 61% 35%, 98% 35%, 68% 57%,
-      79% 91%, 50% 70%, 21% 91%, 32% 57%,
-      2% 35%, 39% 35%
-    );
-    display: none;
-  }
-  .level.completed .star {
-    display: block;
-    animation: pop 0.5s forwards;
-  }
-  @keyframes pop {
-    0% { transform: scale(0); }
-    100% { transform: scale(1); }
-  }
-
-  button {
-    padding: 10px 20px;
-    font-size: 18px;
-    margin-top: 20px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaQuest — Learn Java by Levels</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(120deg, #e0f7fa, #ffffff);
+      text-align: center;
+    }
+    header {
+      padding: 30px 10px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 42px;
+    }
+    p.subtitle {
+      font-size: 18px;
+      color: #333;
+      margin-top: 10px;
+    }
+    .levels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .level-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .level-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.15);
+    }
+    .level-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .xp {
+      color: #00796b;
+      font-weight: bold;
+    }
+    footer {
+      margin: 40px 0;
+      color: #666;
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>JavaQuest</h1>
+    <p class="subtitle">Learn Java step by step like a game. Complete levels. Earn XP. Master coding.</p>
+  </header>
 
-<!-- 封面 -->
-<div id="cover" class="page" style="display:flex;">
-  <h1>Java Adventure!</h1>
-  <button id="startButton">Start Learning</button>
-</div>
+  <section class="levels">
+    <div class="level-card" onclick="goToLevel(1)">
+      <div class="level-title">Level 1: Variables</div>
+      <div>Learn how to store data in Java.</div>
+      <div class="xp">+10 XP</div>
+    </div>
 
-<!-- 地图 -->
-<div id="map" class="page">
-  <h2>Your Java Journey</h2>
-  <div class="level completed" onclick="openLesson(1)">1<div class="star"></div></div>
-  <div class="level locked" onclick="openLesson(2)">2<div class="star"></div></div>
-  <div class="level locked" onclick="openLesson(3)">3<div class="star"></div></div>
-</div>
+    <div class="level-card" onclick="goToLevel(2)">
+      <div class="level-title">Level 2: If / Else</div>
+      <div>Make decisions in your code.</div>
+      <div class="xp">+15 XP</div>
+    </div>
 
-<!-- Lesson 1 -->
-<div id="lesson1" class="page">
-  <h1>Lesson 1: Variables</h1>
-  <p>Java 变量是用来存储数据的容器。例如：</p>
-  <pre>
-int age = 18;
-String name = "Alice";
-  </pre>
-  <button onclick="completeLesson(1)">完成关卡</button>
-</div>
+    <div class="level-card" onclick="goToLevel(3)">
+      <div class="level-title">Level 3: Loops</div>
+      <div>Repeat actions with loops.</div>
+      <div class="xp">+20 XP</div>
+    </div>
 
-<!-- Lesson 2 -->
-<div id="lesson2" class="page">
-  <h1>Lesson 2: Loops</h1>
-  <p>循环可以让代码重复执行：</p>
-  <pre>
-for (int i = 0; i < 5; i++) {
-    System.out.println(i);
-}
-  </pre>
-  <button onclick="completeLesson(2)">完成关卡</button>
-</div>
+    <div class="level-card" onclick="goToLevel(4)">
+      <div class="level-title">Level 4: Methods</div>
+      <div>Organize code into reusable methods.</div>
+      <div class="xp">+25 XP</div>
+    </div>
 
-<!-- Lesson 3 -->
-<div id="lesson3" class="page">
-  <h1>Lesson 3: Functions</h1>
-  <p>函数是可以重复使用的代码块：</p>
-  <pre>
-public static int add(int a, int b) {
-    return a + b;
-}
-  </pre>
-  <button onclick="completeLesson(3)">完成关卡</button>
-</div>
+    <div class="level-card" onclick="goToLevel(5)">
+      <div class="level-title">Level 5: Classes</div>
+      <div>Build objects and classes.</div>
+      <div class="xp">+30 XP</div>
+    </div>
+  </section>
 
-<script>
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-  document.getElementById(id).style.display = 'block';
-}
+  <footer>
+    Built for students learning Java in a fun, interactive way.
+  </footer>
 
-document.getElementById('startButton').onclick = () => showPage('map');
-
-function openLesson(num) {
-  const level = document.querySelectorAll('.level')[num - 1];
-  if (level.classList.contains("locked")) {
-    alert("This level is locked!");
-    return;
-  }
-  showPage('lesson' + num);
-}
-
-function completeLesson(num) {
-  localStorage.setItem("lesson" + num, "completed");
-  alert("恭喜完成 Lesson " + num + "！");
-  unlockLevel(num + 1);
-  showPage('map');
-}
-
-function unlockLevel(num) {
-  const levels = document.querySelectorAll('.level');
-  if (levels[num - 1]) {
-    levels[num - 1].classList.remove("locked");
-    levels[num - 1].classList.add("completed");
-  }
-}
-
-window.onload = function() {
-  if (localStorage.getItem("lesson1") === "completed") unlockLevel(2);
-  if (localStorage.getItem("lesson2") === "completed") unlockLevel(3);
-};
-</script>
-
+  <script>
+    function goToLevel(level) {
+      alert("Level " + level + " coming next! We will build this page together.");
+    }
+  </script>
 </body>
 </html>
