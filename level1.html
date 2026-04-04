@@ -1,95 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JavaQuest Level 1 - Variables</title>
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f9ff;
-      margin: 0;
-      padding: 30px;
-      text-align: center;
-    }
-    h1 { margin-bottom: 10px; }
-    .task {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 800px;
-      margin: 20px auto;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      text-align: left;
-    }
-    textarea {
-      width: 100%;
-      height: 180px;
-      margin-top: 15px;
-      font-family: monospace;
-      font-size: 14px;
-      padding: 10px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 6px;
-      border: none;
-    }
-    #result {
-      margin-top: 15px;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    .back {
-      margin-top: 20px;
-      display: inline-block;
-      text-decoration: none;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 1: Variables — CodeMentor AI</title>
+<style>
+body { font-family: Arial, Helvetica, sans-serif; background: #f4f9ff; margin:0; padding:30px; text-align:center;}
+h1 { margin-bottom:10px;}
+.task { background:white; padding:20px; border-radius:10px; max-width:800px; margin:20px auto; box-shadow:0 8px 16px rgba(0,0,0,0.1); text-align:left;}
+textarea { width:100%; height:180px; margin-top:15px; font-family: monospace; font-size:14px; padding:10px;}
+button { margin-top:15px; padding:10px 20px; font-size:16px; cursor:pointer; border-radius:6px; border:none;}
+#result { margin-top:15px; font-weight:bold; font-size:18px;}
+#visual { margin-top:20px; font-family: monospace; background:#e0f7fa; padding:10px; border-radius:6px;}
+.back { margin-top:20px; display:inline-block; text-decoration:none; font-weight:bold;}
+</style>
 </head>
 <body>
-  <h1>Level 1: Variables</h1>
+<h1>Level 1: Variables</h1>
 
-  <div class="task">
-    <p><strong>Task:</strong> Create an integer variable named <code>age</code> and assign it the value <code>16</code>.</p>
-    <p>Example format:</p>
-    <pre>int number = 5;</pre>
+<div class="task">
+<p><strong>Task:</strong> Create an integer variable named <code>age</code> and assign it <code>16</code>.</p>
+<p>Example:</p><pre>int number = 5;</pre>
+<textarea id="code" placeholder="Type your Java code here..."></textarea>
+<button onclick="checkCode()">Run Code</button>
+<div id="result"></div>
 
-    <textarea id="code" placeholder="Type your Java code here..."></textarea>
-    <button onclick="checkCode()">Run Code</button>
+<button onclick="visualize()">Visualize Execution</button>
+<div id="visual"></div>
+</div>
 
-    <div id="result"></div>
-  </div>
+<a class="back" href="index.html">⬅ Back to Levels</a>
 
-  <a class="back" href="index.html">⬅ Back to Levels</a>
+<script>
+let failCount = 0;
 
-  <script>
-    function normalize(text) {
-      return text.replace(/\s+/g, '').toLowerCase();
+function normalize(text){ return text.replace(/\s+/g,'').toLowerCase(); }
+
+function checkCode(){
+  const userCode = normalize(document.getElementById("code").value);
+  const resultDiv = document.getElementById("result");
+  
+  if(userCode.includes("intage=16") || userCode.includes("intage=16;")){
+    resultDiv.style.color = "green";
+    resultDiv.innerText = "✅ Correct! You defined age = 16.";
+    failCount = 0;
+  } else {
+    resultDiv.style.color = "red";
+    failCount++;
+    if(failCount>=3){
+      resultDiv.innerText = "⚠️ It seems you're stuck. Hint: Start with 'int age = 16;'";
+    } else {
+      resultDiv.innerText = "❌ Not quite right. Check variable name & syntax.";
     }
+  }
+}
 
-    function checkCode() {
-      const userCode = normalize(document.getElementById("code").value);
-
-      const acceptedPatterns = [
-        "intage=16;",
-        "intage=16"
-      ];
-
-      const isCorrect = acceptedPatterns.some(p => userCode.includes(p));
-
-      if (isCorrect) {
-        document.getElementById("result").innerText = "✅ Correct! You earned 10 XP.";
-      } else if (userCode.includes("int") && userCode.includes("age")) {
-        document.getElementById("result").innerText = "🟡 Almost! Check the value and syntax. It should be 16.";
-      } else {
-        document.getElementById("result").innerText = "❌ Not quite. Make sure you declared: int age = 16;";
-      }
-    }
-  </script>
+// Simple visualization demo
+function visualize(){
+  const userCode = document.getElementById("code").value;
+  const visualDiv = document.getElementById("visual");
+  
+  if(userCode.includes("age") && userCode.includes("16")){
+    visualDiv.innerText = "Execution:\nint age = 16;\n▶ age = 16";
+  } else {
+    visualDiv.innerText = "Nothing to visualize. Try defining 'age' first.";
+  }
+}
+</script>
 </body>
 </html>
