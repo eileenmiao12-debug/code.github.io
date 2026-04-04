@@ -1,86 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CodeMentor AI — Learn Java</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaQuest — Learn Java by Levels</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(120deg, #e0f7fa, #ffffff);
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
       text-align: center;
       overflow-x: hidden;
     }
+
     header {
-      padding: 30px 10px;
+      padding: 50px 20px 20px 20px;
       position: relative;
     }
+
     h1 {
       margin: 0;
       font-size: 48px;
+      color: #0d3b66;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     }
+
     p.subtitle {
-      font-size: 18px;
-      color: #333;
-      margin-top: 10px;
+      font-size: 20px;
+      color: #034f84;
+      margin-top: 15px;
     }
-    /* Levels Grid */
+
+    .mascot {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      width: 120px;
+      animation: jump 1.2s infinite alternate;
+    }
+
+    @keyframes jump {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+      100% { transform: translateY(0px); }
+    }
+
     .levels {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      padding: 40px;
-      max-width: 900px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      padding: 50px 40px;
+      max-width: 1000px;
       margin: auto;
     }
+
     .level-card {
       background: white;
-      border-radius: 12px;
-      padding: 25px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
     .level-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 22px rgba(0,0,0,0.15);
+      transform: translateY(-8px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.2);
     }
+
     .level-title {
-      font-size: 20px;
-      margin-bottom: 10px;
+      font-size: 22px;
+      margin-bottom: 12px;
       font-weight: bold;
+      color: #0d3b66;
     }
+
     .xp {
       color: #00796b;
       font-weight: bold;
-    }
-    footer {
-      margin: 40px 0;
-      color: #666;
+      margin-top: 8px;
     }
 
-    /* Mascot */
-    #mascot {
-      position: absolute;
-      right: 20px;
-      top: 10px;
-      width: 80px;
-      animation: float 2s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+    footer {
+      margin: 50px 0;
+      color: #333;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>CodeMentor AI</h1>
-    <p class="subtitle">Learn Java with AI guidance, visualization & anti-frustration tips!</p>
-    <!-- 可爱小人 -->
-    <img id="mascot" src="mascot.png" alt="Mascot">
+    <h1>JavaQuest</h1>
+    <p class="subtitle">Learn Java step by step like a game. Complete levels. Earn XP. Master coding.</p>
+    <img src="mascot.png" alt="Mascot" class="mascot">
   </header>
 
   <section class="levels">
@@ -116,13 +128,18 @@
   </section>
 
   <footer>
-    Built for students learning Java with AI guidance & fun.
+    Built for students learning Java in a fun, interactive way.
   </footer>
 
   <script>
     function goToLevel(level) {
-      if(level === 1) { window.location.href = "level1.html"; }
-      else { alert("This level is coming next! AI guidance coming soon."); }
+      if (level === 1) {
+        window.location.href = "level1.html";
+      } else if (level === 2) {
+        window.location.href = "level2.html";
+      } else {
+        alert("This level is coming next! We will build it soon.");
+      }
     }
   </script>
 </body>
