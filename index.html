@@ -1,146 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>JavaQuest — Learn Java by Levels</title>
-<style>
-  body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(135deg, #6dd5fa, #ffffff);
-    overflow-x: hidden;
-    position: relative;
-  }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeMentor AI — Learn Java</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(120deg, #e0f7fa, #ffffff);
+      text-align: center;
+      overflow-x: hidden;
+    }
+    header {
+      padding: 30px 10px;
+      position: relative;
+    }
+    h1 {
+      margin: 0;
+      font-size: 48px;
+    }
+    p.subtitle {
+      font-size: 18px;
+      color: #333;
+      margin-top: 10px;
+    }
+    /* Levels Grid */
+    .levels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 40px;
+      max-width: 900px;
+      margin: auto;
+    }
+    .level-card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .level-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.15);
+    }
+    .level-title {
+      font-size: 20px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .xp {
+      color: #00796b;
+      font-weight: bold;
+    }
+    footer {
+      margin: 40px 0;
+      color: #666;
+    }
 
-  /* Hero Section */
-  .hero {
-    height: 60vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #42a5f5, #e0f7fa);
-    color: white;
-    text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
-    animation: heroFloat 6s ease-in-out infinite;
-    position: relative;
-  }
-
-  @keyframes heroFloat {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .hero h1 {
-    font-size: 60px;
-    margin: 0;
-  }
-
-  .hero p {
-    font-size: 20px;
-    margin: 10px 0;
-  }
-
-  .hero button {
-    padding: 12px 30px;
-    font-size: 18px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 8px;
-    background: #00796b;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .hero button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-  }
-
-  /* Levels Grid */
-  .levels {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 40px;
-    max-width: 900px;
-    margin: auto;
-  }
-
-  .level-card {
-    background: white;
-    border-radius: 12px;
-    padding: 25px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .level-card:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-  }
-
-  .level-title {
-    font-size: 20px;
-    margin-bottom: 10px;
-    font-weight: bold;
-  }
-
-  .xp {
-    color: #00796b;
-    font-weight: bold;
-  }
-
-  footer {
-    margin: 40px 0;
-    color: #666;
-    text-align: center;
-  }
-
-  /* Mascot */
-  #mascot {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 80px;
-    cursor: pointer;
-    z-index: 1000;
-    animation: floatMascot 3s ease-in-out infinite;
-  }
-
-  @keyframes floatMascot {
-    0%,100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
-
-  /* Mascot blinking */
-  @keyframes blink {
-    0%, 90%, 100% { transform: scaleY(1); }
-    95% { transform: scaleY(0.1); }
-  }
-  #mascot img {
-    width: 100%;
-    height: auto;
-    animation: blink 4s infinite;
-    transform-origin: center bottom;
-  }
-</style>
+    /* Mascot */
+    #mascot {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      width: 80px;
+      animation: float 2s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>CodeMentor AI</h1>
+    <p class="subtitle">Learn Java with AI guidance, visualization & anti-frustration tips!</p>
+    <!-- 可爱小人 -->
+    <img id="mascot" src="mascot.png" alt="Mascot">
+  </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>JavaQuest</h1>
-    <p>Learn Java step by step like a game</p>
-    <p>Complete levels, earn XP, master coding!</p>
-    <button onclick="scrollToLevels()">Start Your Quest</button>
-  </section>
-
-  <!-- Levels -->
-  <section class="levels" id="levelsSection">
+  <section class="levels">
     <div class="level-card" onclick="goToLevel(1)">
       <div class="level-title">Level 1: Variables</div>
       <div>Learn how to store data in Java.</div>
@@ -173,34 +116,14 @@
   </section>
 
   <footer>
-    Built for students learning Java in a fun, interactive way.
+    Built for students learning Java with AI guidance & fun.
   </footer>
 
-  <!-- Mascot -->
-  <div id="mascot">
-    <img src="https://i.postimg.cc/3N7RypM2/cute-mascot.png" alt="Mascot" />
-  </div>
-
-<script>
-function goToLevel(level) {
-  if (level === 1) {
-    window.location.href = "level1.html";
-  } else if (level === 2) {
-    window.location.href = "level2.html";
-  } else {
-    alert("This level is coming next! We will build it soon.");
-  }
-}
-
-function scrollToLevels() {
-  document.getElementById("levelsSection").scrollIntoView({ behavior: 'smooth' });
-}
-
-// Mascot interaction
-document.getElementById("mascot").addEventListener("click", () => {
-  alert("Hello! Ready to start your JavaQuest? 🏆");
-});
-</script>
-
+  <script>
+    function goToLevel(level) {
+      if(level === 1) { window.location.href = "level1.html"; }
+      else { alert("This level is coming next! AI guidance coming soon."); }
+    }
+  </script>
 </body>
 </html>
