@@ -10,6 +10,7 @@
     font-family: Arial, Helvetica, sans-serif;
     background: linear-gradient(135deg, #6dd5fa, #ffffff);
     overflow-x: hidden;
+    position: relative;
   }
 
   /* Hero Section */
@@ -23,6 +24,7 @@
     color: white;
     text-shadow: 1px 1px 4px rgba(0,0,0,0.4);
     animation: heroFloat 6s ease-in-out infinite;
+    position: relative;
   }
 
   @keyframes heroFloat {
@@ -98,10 +100,38 @@
     text-align: center;
   }
 
+  /* Mascot */
+  #mascot {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 80px;
+    cursor: pointer;
+    z-index: 1000;
+    animation: floatMascot 3s ease-in-out infinite;
+  }
+
+  @keyframes floatMascot {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  /* Mascot blinking */
+  @keyframes blink {
+    0%, 90%, 100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.1); }
+  }
+  #mascot img {
+    width: 100%;
+    height: auto;
+    animation: blink 4s infinite;
+    transform-origin: center bottom;
+  }
 </style>
 </head>
 <body>
 
+  <!-- Hero Section -->
   <section class="hero">
     <h1>JavaQuest</h1>
     <p>Learn Java step by step like a game</p>
@@ -109,6 +139,7 @@
     <button onclick="scrollToLevels()">Start Your Quest</button>
   </section>
 
+  <!-- Levels -->
   <section class="levels" id="levelsSection">
     <div class="level-card" onclick="goToLevel(1)">
       <div class="level-title">Level 1: Variables</div>
@@ -145,6 +176,11 @@
     Built for students learning Java in a fun, interactive way.
   </footer>
 
+  <!-- Mascot -->
+  <div id="mascot">
+    <img src="https://i.postimg.cc/3N7RypM2/cute-mascot.png" alt="Mascot" />
+  </div>
+
 <script>
 function goToLevel(level) {
   if (level === 1) {
@@ -159,6 +195,11 @@ function goToLevel(level) {
 function scrollToLevels() {
   document.getElementById("levelsSection").scrollIntoView({ behavior: 'smooth' });
 }
+
+// Mascot interaction
+document.getElementById("mascot").addEventListener("click", () => {
+  alert("Hello! Ready to start your JavaQuest? 🏆");
+});
 </script>
 
 </body>
