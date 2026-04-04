@@ -2,16 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JavaQuest Level 2 - If/Else</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JavaQuest Level 2 - If / Else</title>
   <style>
-    body { font-family: Arial, Helvetica, sans-serif; background: #fff7e6; margin: 0; padding: 30px; text-align: center; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff7e6;
+      margin: 0;
+      padding: 30px;
+      text-align: center;
+    }
     h1 { margin-bottom: 10px; }
-    .task { background: white; padding: 20px; border-radius: 10px; max-width: 800px; margin: 20px auto; box-shadow: 0 8px 16px rgba(0,0,0,0.1); text-align: left; }
-    textarea { width: 100%; height: 180px; margin-top: 15px; font-family: monospace; font-size: 14px; padding: 10px; }
-    button { margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer; border-radius: 6px; border: none; }
-    #result { margin-top: 15px; font-weight: bold; font-size: 18px; }
-    .back { margin-top: 20px; display: inline-block; text-decoration: none; font-weight: bold; }
+    .task {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 800px;
+      margin: 20px auto;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    textarea {
+      width: 100%;
+      height: 180px;
+      margin-top: 15px;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 10px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: none;
+    }
+    #result {
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .back {
+      margin-top: 20px;
+      display: inline-block;
+      text-decoration: none;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -32,25 +69,26 @@
   <a class="back" href="index.html">⬅ Back to Levels</a>
 
   <script>
-    function normalize(text) { return text.replace(/\s+/g,'').toLowerCase(); }
+    function normalize(text) {
+      return text.replace(/\s+/g,'').toLowerCase();
+    }
 
     function checkCode() {
       const userCode = normalize(document.getElementById("code").value);
-      const acceptedPatterns = [
-        'intage=', // declare variable
-        'if(age>=18){system.out.println("adult");}else{system.out.println("minor");}',
-        'if(age>=18){system.out.println("adult");}else{system.out.println("minor")}'
-      ];
-
-      const isCorrect = acceptedPatterns.every(pattern => userCode.includes(pattern));
       const result = document.getElementById("result");
 
-      if(isCorrect){
+     
+      const ageDeclared = userCode.includes("intage");
+      const ifAdult = userCode.includes('if(age>=18)') || userCode.includes('if(age>=18){');
+      const printAdult = userCode.includes('system.out.println("adult")');
+      const printMinor = userCode.includes('system.out.println("minor")');
+
+      if(ageDeclared && ifAdult && printAdult && printMinor){
         result.style.color = 'green';
         result.textContent = "✅ Correct! Well done.";
       } else {
         result.style.color = 'red';
-        result.textContent = "❌ Not quite right. Hint: Use an if statement to check age and print 'Adult' or 'Minor'.";
+        result.textContent = "❌ Not quite right. Hint: Declare age, use if/else to print 'Adult' or 'Minor'.";
       }
     }
   </script>
