@@ -100,10 +100,14 @@
     Built for students learning Java in a fun, interactive way.
   </footer>
 
-  <script>
-    function goToLevel(level) {
-      alert("Level " + level + " coming next! We will build this page together.");
+ <script>
+  function goToLevel(level) {
+    if (level === 1) {
+      window.location.href = "level1.html";
+    } else {
+      alert("This level is coming next! We will build it soon.");
     }
-  </script>
+  }
+</script>
 </body>
 </html>
