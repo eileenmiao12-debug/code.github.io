@@ -4,61 +4,103 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodeMentor AI — Learn Java with AI</title>
+
+  <!-- Google Fonts for nicer typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+
   <style>
-    /* General body styling */
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: 'Roboto', sans-serif;
       background: linear-gradient(135deg, #d0f0fd, #ffffff);
       text-align: center;
       overflow-x: hidden;
+      position: relative;
     }
 
-    /* Header section */
+    /* Hero Section */
     header {
-      padding: 50px 20px 20px 20px;
+      padding: 80px 20px 60px 20px;
+      background: linear-gradient(135deg, #56ccf2, #2f80ed);
+      color: #fff;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      border-bottom-left-radius: 50px;
+      border-bottom-right-radius: 50px;
+      position: relative;
+      overflow: hidden;
     }
-    h1 {
-      font-size: 48px;
+    header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 56px;
       margin: 0;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
     }
-    p.subtitle {
-      font-size: 20px;
-      color: #333;
-      margin-top: 10px;
+    header p.subtitle {
+      font-size: 22px;
+      margin-top: 15px;
+      color: #e0f7fa;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+    }
+    .cta-button {
+      margin-top: 30px;
+      background: #fff;
+      color: #2f80ed;
+      padding: 15px 35px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .cta-button:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
     }
 
-    /* Container for levels */
+    /* Floating circles background */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      animation: floatCircle 15s linear infinite;
+    }
+    @keyframes floatCircle {
+      0% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-50px) translateX(30px); }
+      100% { transform: translateY(0) translateX(0); }
+    }
+
+    /* Levels Section */
     .levels {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 25px;
-      padding: 50px 20px;
+      padding: 60px 20px;
       max-width: 1000px;
       margin: auto;
     }
-
-    /* Level card styling */
     .level-card {
       background: white;
       border-radius: 16px;
       padding: 30px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12);
       cursor: pointer;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .level-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.15);
+      transform: translateY(-10px);
+      box-shadow: 0 18px 35px rgba(0,0,0,0.2);
     }
     .level-title {
-      font-size: 22px;
+      font-size: 24px;
       margin-bottom: 12px;
-      font-weight: bold;
-      color: #00796b;
+      font-weight: 600;
+      color: #2f80ed;
     }
     .xp {
-      color: #00796b;
+      color: #56ccf2;
       font-weight: bold;
       margin-top: 8px;
     }
@@ -70,60 +112,63 @@
       font-size: 16px;
     }
 
-    /* Mascot image floating */
+    /* Mascot floating */
     .mascot {
-      position: fixed;  /* stays visible */
+      position: fixed;
       bottom: 20px;
       right: 20px;
-      width: 80px;
+      width: 120px;
       cursor: pointer;
       animation: float 2s infinite ease-in-out;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
       z-index: 1000;
     }
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
+      50% { transform: translateY(-20px); }
     }
     .mascot:hover {
-      transform: scale(1.2);
+      transform: scale(1.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
+  <!-- Hero Section -->
   <header>
     <h1>CodeMentor AI</h1>
-    <p class="subtitle">Learn Java with AI guidance. Complete levels. Earn XP. Visualize code!</p>
+    <p class="subtitle">Learn Java with AI guidance. Visualize code and stay motivated!</p>
+    <button class="cta-button" onclick="scrollToLevels()">Start Learning</button>
+
+    <!-- Floating circles for decoration -->
+    <div class="circle" style="width: 100px; height: 100px; top: 50px; left: 20px;"></div>
+    <div class="circle" style="width: 60px; height: 60px; top: 100px; right: 50px;"></div>
+    <div class="circle" style="width: 80px; height: 80px; top: 200px; left: 200px;"></div>
   </header>
 
   <!-- Levels Section -->
-  <section class="levels">
+  <section class="levels" id="levels">
     <div class="level-card" onclick="goToLevel(1)">
       <div class="level-title">Level 1: Variables</div>
       <div>Learn how to store data in Java.</div>
       <div class="xp">+10 XP</div>
     </div>
-
     <div class="level-card" onclick="goToLevel(2)">
       <div class="level-title">Level 2: If / Else</div>
       <div>Make decisions in your code.</div>
       <div class="xp">+15 XP</div>
     </div>
-
     <div class="level-card" onclick="goToLevel(3)">
       <div class="level-title">Level 3: Loops</div>
       <div>Repeat actions with loops.</div>
       <div class="xp">+20 XP</div>
     </div>
-
     <div class="level-card" onclick="goToLevel(4)">
       <div class="level-title">Level 4: Methods</div>
       <div>Organize code into reusable methods.</div>
       <div class="xp">+25 XP</div>
     </div>
-
     <div class="level-card" onclick="goToLevel(5)">
       <div class="level-title">Level 5: Classes</div>
       <div>Build objects and classes.</div>
@@ -133,14 +178,19 @@
 
   <!-- Footer -->
   <footer>
-    Built for students learning Java with AI and visualizations. Perfect for ECE applications!
+    Built for students learning Java with AI. Perfect for ECE applications!
   </footer>
 
   <!-- Floating Mascot -->
   <img src="mascot.png" class="mascot" alt="mascot" onclick="mascotClick(this)">
 
   <script>
-    // Function to navigate to levels
+    // Scroll to levels when CTA clicked
+    function scrollToLevels() {
+      document.getElementById("levels").scrollIntoView({ behavior: "smooth" });
+    }
+
+    // Navigate to levels
     function goToLevel(level) {
       if (level === 1) window.location.href = "level1.html";
       else if (level === 2) window.location.href = "level2.html";
@@ -150,12 +200,11 @@
       else alert("This level is coming soon!");
     }
 
-    // Mascot click interaction
+    // Mascot click animation & message
     function mascotClick(el) {
-      el.style.transform = "translateY(-25px) scale(1.2)";
+      el.style.transform = "translateY(-25px) scale(1.3)";
       setTimeout(() => { el.style.transform = ""; }, 400);
 
-      // Floating encouragement text
       const msg = document.createElement("div");
       const phrases = ["Keep going!", "You got this!", "Code is fun!"];
       msg.textContent = phrases[Math.floor(Math.random() * phrases.length)];
