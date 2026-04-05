@@ -1,257 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Level 1: Variables - CodeMentor AI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background: #f0faff;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 {
-      font-family: 'Poppins', sans-serif;
-      color: #2f80ed;
-    }
-    .question-container {
-      background: white;
-      padding: 25px;
-      margin: 30px auto;
-      max-width: 600px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-      text-align: left;
-    }
-    .question {
-      font-size: 20px;
-      margin-bottom: 15px;
-    }
-    .options button, .next-btn {
-      display: block;
-      margin: 10px 0;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-    .options button:hover, .next-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .feedback {
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-    }
-
-    /* Matching style */
-    .match-pair {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-    }
-    .match-pair div {
-      padding: 10px 15px;
-      background: #e0f7fa;
-      border-radius: 8px;
-      cursor: grab;
-      user-select: none;
-    }
-    .matched {
-      background: #56ccf2 !important;
-      color: white;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JavaQuest Level 1 - Variables</title>
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(120deg, #c3e0ff, #f4f9ff);
+  margin:0; padding:20px; text-align:center;
+}
+h1 { margin-bottom:10px; }
+.lesson, .question {
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  max-width:800px;
+  margin:20px auto;
+  box-shadow:0 8px 18px rgba(0,0,0,0.15);
+  text-align:left;
+  transition: transform 0.3s;
+}
+button { margin-top:15px; padding:10px 20px; font-size:16px; cursor:pointer; border-radius:6px; border:none; background:#56ccf2; color:white; }
+button:hover { background:#2a9df4; }
+#result { margin-top:15px; font-weight:bold; font-size:18px; }
+.draggable, .droppable {
+  padding:10px; margin:8px; border-radius:8px; background:#e0f7fa; cursor: grab; text-align:center;
+}
+.droppable.matched { background:#56ccf2; color:white; }
+#match-container { display:flex; justify-content:space-between; max-width:600px; margin:auto;}
+.hidden { display:none; }
+#xp-bar {
+  margin:20px auto; max-width:500px; background:#e0e0e0; height:24px; border-radius:12px; overflow:hidden;
+}
+#xp-fill { height:100%; width:0%; background:#56ccf2; transition: width 0.5s;}
+#mascot {
+  position:fixed; bottom:20px; right:20px; width:80px; animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0% { transform: translateY(0);}
+  50% { transform: translateY(-15px);}
+  100% { transform: translateY(0);}
+}
+#lives { font-weight:bold; font-size:18px; margin-top:10px;}
+.back { margin-top:20px; display:inline-block; text-decoration:none; font-weight:bold; color:#333;}
+</style>
 </head>
 <body>
+<h1>Level 1: Variables</h1>
+<div id="xp-bar"><div id="xp-fill"></div></div>
+<div id="lives">❤️❤️❤️</div>
 
-  <h1>Level 1: Variables</h1>
+<!-- Lesson -->
+<div class="lesson" id="lesson">
+<h2>Basic Java Variables</h2>
+<p>In Java, variables store data. Common types:</p>
+<ul>
+<li><strong>int</strong> - whole numbers</li>
+<li><strong>double</strong> - decimal numbers</li>
+<li><strong>String</strong> - text</li>
+</ul>
+<button onclick="nextQuestion()">Start Practice</button>
+</div>
 
-  <!-- Intro Explanation -->
-  <div class="question-container" id="intro">
-    <div class="question">
-      Variables store data in Java. You can think of them as labeled boxes that hold values.
-    </div>
-    <p>Example: <code>int age = 15;</code> stores the number 15 in a variable named age.</p>
-    <button class="next-btn" onclick="startQuiz()">Start Quiz</button>
-  </div>
+<!-- Question 1 -->
+<div class="question hidden" id="question1">
+<h3>Question 1 of 3: Multiple Choice</h3>
+<p>Which of these is a valid integer variable in Java?</p>
+<label><input type="radio" name="q1" value="wrong"> double num = 3.14;</label><br>
+<label><input type="radio" name="q1" value="correct"> int age = 16;</label><br>
+<label><input type="radio" name="q1" value="wrong"> String name = "Alice";</label><br>
+<button onclick="checkMCQ('q1','question1')">Submit</button>
+<div id="result1"></div>
+</div>
 
-  <!-- Quiz container -->
-  <div class="question-container" id="quiz" style="display:none;">
-    <div id="question-area"></div>
-    <div class="feedback" id="feedback"></div>
-  </div>
+<!-- Question 2 -->
+<div class="question hidden" id="question2">
+<h3>Question 2 of 3: Matching</h3>
+<p>Drag each type to the correct example:</p>
+<div id="match-container">
+<div id="left-column">
+<div class="draggable" draggable="true" data-value="int">int</div>
+<div class="draggable" draggable="true" data-value="double">double</div>
+<div class="draggable" draggable="true" data-value="String">String</div>
+</div>
+<div id="right-column">
+<div class="droppable" data-value="int">42</div>
+<div class="droppable" data-value="double">3.14</div>
+<div class="droppable" data-value="String">"Hello"</div>
+</div>
+</div>
+<button onclick="checkMatch()">Check Matches</button>
+<div id="result2"></div>
+</div>
 
-  <script>
-    const questions = [
-      {
-        type: "multiple-choice",
-        question: "Which of the following is a correct way to declare an integer variable in Java?",
-        options: ["int number = 10;", "number int = 10;", "int 10 = number;", "var number = 10;"],
-        answer: 0
-      },
-      {
-        type: "matching",
-        question: "Match the variable type to an example value:",
-        pairs: [
-          {left: "int", right: "42"},
-          {left: "double", right: "3.14"},
-          {left: "String", right: "\"Hello\""}
-        ]
-      },
-      {
-        type: "typing",
-        question: "Type the correct Java code to declare a variable 'score' with value 100.",
-        answer: "int score = 100;"
-      }
-    ];
+<!-- Question 3 -->
+<div class="question hidden" id="question3">
+<h3>Question 3 of 3: Type Your Code</h3>
+<p>Create an integer variable named <code>age</code> and assign it the value <code>16</code>.</p>
+<textarea id="code" placeholder="Type your Java code here..." style="width:100%;height:80px;"></textarea>
+<button onclick="checkCode()">Run Code</button>
+<div id="result3"></div>
+</div>
 
-    let currentIndex = 0;
+<!-- Extra revive questions -->
+<div class="question hidden" id="revive">
+<h3>Revive Challenge: 5 Questions to regain lives</h3>
+<p>Answer correctly to recover a life!</p>
+<textarea id="reviveAnswer" placeholder="Type your answer..."></textarea>
+<button onclick="checkRevive()">Submit</button>
+<div id="reviveResult"></div>
+</div>
 
-    function startQuiz() {
-      document.getElementById("intro").style.display = "none";
-      document.getElementById("quiz").style.display = "block";
-      showQuestion();
+<a class="back" href="index.html">⬅ Back to Home</a>
+<img src="mascot.png" id="mascot" alt="Mascot">
+
+<script>
+let currentQuestion = 0;
+let xp = 0;
+let lives = 3;
+
+const xpBar = document.getElementById("xp-fill");
+const livesDisplay = document.getElementById("lives");
+
+function updateXP(amount) {
+  xp += amount;
+  xpBar.style.width = Math.min(xp*5,100)+'%';
+}
+
+function updateLives() {
+  let hearts = '';
+  for(let i=0;i<lives;i++) hearts+='❤️';
+  livesDisplay.innerHTML = hearts;
+}
+
+function nextQuestion() {
+  document.getElementById("lesson").classList.add("hidden");
+  showQuestion(1);
+}
+
+function showQuestion(num) {
+  currentQuestion = num;
+  for(let i=1;i<=3;i++){
+    document.getElementById("question"+i).classList.add("hidden");
+  }
+  document.getElementById("revive").classList.add("hidden");
+  document.getElementById("question"+num).classList.remove("hidden");
+}
+
+function checkMCQ(name,qid){
+  const options = document.getElementsByName(name);
+  let correct = false;
+  options.forEach(o=>{ if(o.checked && o.value=="correct") correct=true; });
+  if(correct){
+    document.getElementById("result1").innerText = "Correct!";
+    updateXP(5);
+  } else {
+    document.getElementById("result1").innerText = "Wrong!";
+    lives--;
+    updateLives();
+    if(lives<=0){showRevive(); return;}
+  }
+  setTimeout(()=>showQuestion(2),1000);
+}
+
+function checkMatch(){
+  const draggables = document.querySelectorAll(".draggable");
+  const droppables = document.querySelectorAll(".droppable");
+  let correctCount=0;
+  droppables.forEach(d=>{
+    if(d.classList.contains("matched")) correctCount++;
+  });
+  if(correctCount===3){
+    document.getElementById("result2").innerText="All Correct!";
+    updateXP(5);
+  } else {
+    document.getElementById("result2").innerText="Some are wrong!";
+    lives--;
+    updateLives();
+    if(lives<=0){showRevive(); return;}
+  }
+  setTimeout(()=>showQuestion(3),1000);
+}
+
+// Simple code check for demo
+function checkCode(){
+  const val = document.getElementById("code").value;
+  if(val.includes("int age = 16")){
+    document.getElementById("result3").innerText="Correct!";
+    updateXP(5);
+  } else {
+    document.getElementById("result3").innerText="Wrong!";
+    lives--;
+    updateLives();
+    if(lives<=0){showRevive(); return;}
+  }
+}
+
+function showRevive(){
+  alert("All lives lost! Complete 5 extra questions to revive.");
+  document.getElementById("revive").classList.remove("hidden");
+}
+
+function checkRevive(){
+  const val = document.getElementById("reviveAnswer").value.toLowerCase();
+  if(val.includes("int")){ 
+    document.getElementById("reviveResult").innerText="Correct! +1 life";
+    lives++;
+    updateLives();
+  } else {
+    document.getElementById("reviveResult").innerText="Wrong!";
+  }
+  document.getElementById("reviveAnswer").value="";
+  if(lives>0) showQuestion(1);
+}
+
+// Drag & Drop logic
+const draggables = document.querySelectorAll(".draggable");
+const droppables = document.querySelectorAll(".droppable");
+draggables.forEach(drag=>{
+  drag.addEventListener("dragstart",e=>{
+    e.dataTransfer.setData("text/plain",drag.dataset.value);
+  });
+});
+droppables.forEach(drop=>{
+  drop.addEventListener("dragover",e=>{e.preventDefault();});
+  drop.addEventListener("drop",e=>{
+    const data = e.dataTransfer.getData("text/plain");
+    if(data===drop.dataset.value){
+      drop.classList.add("matched");
+      drop.innerText=data+" ✅";
     }
-
-    function showQuestion() {
-      const q = questions[currentIndex];
-      const area = document.getElementById("question-area");
-      area.innerHTML = "";
-      document.getElementById("feedback").innerText = "";
-
-      if (q.type === "multiple-choice") {
-        const qText = document.createElement("div");
-        qText.className = "question";
-        qText.innerText = q.question;
-        area.appendChild(qText);
-
-        const optionsDiv = document.createElement("div");
-        optionsDiv.className = "options";
-        q.options.forEach((opt, idx) => {
-          const btn = document.createElement("button");
-          btn.innerText = opt;
-          btn.onclick = () => checkAnswer(idx);
-          optionsDiv.appendChild(btn);
-        });
-        area.appendChild(optionsDiv);
-      } 
-      else if (q.type === "matching") {
-        const qText = document.createElement("div");
-        qText.className = "question";
-        qText.innerText = q.question;
-        area.appendChild(qText);
-
-        // Simple click matching
-        q.pairs.forEach(pair => {
-          const pairDiv = document.createElement("div");
-          pairDiv.className = "match-pair";
-          const left = document.createElement("div");
-          left.innerText = pair.left;
-          left.dataset.left = pair.left;
-          const right = document.createElement("div");
-          right.innerText = pair.right;
-          right.dataset.right = pair.right;
-
-          left.onclick = () => attemptMatch(left, right);
-          right.onclick = () => attemptMatch(left, right);
-
-          pairDiv.appendChild(left);
-          pairDiv.appendChild(right);
-          area.appendChild(pairDiv);
-        });
-      } 
-      else if (q.type === "typing") {
-        const qText = document.createElement("div");
-        qText.className = "question";
-        qText.innerText = q.question;
-        area.appendChild(qText);
-
-        const input = document.createElement("input");
-        input.type = "text";
-        input.id = "typing-input";
-        area.appendChild(input);
-
-        const btn = document.createElement("button");
-        btn.innerText = "Submit";
-        btn.onclick = () => {
-          const val = document.getElementById("typing-input").value.trim();
-          if (val === q.answer) {
-            feedback("Correct!", true);
-          } else {
-            feedback("Try again!", false);
-          }
-        }
-        area.appendChild(btn);
-      }
-    }
-
-    function checkAnswer(idx) {
-      const q = questions[currentIndex];
-      if (idx === q.answer) {
-        feedback("Correct!", true);
-      } else {
-        feedback("Wrong, try again.", false);
-      }
-    }
-
-    function feedback(msg, correct) {
-      const fb = document.getElementById("feedback");
-      fb.innerText = msg;
-      fb.style.color = correct ? "green" : "red";
-
-      if (correct) {
-        setTimeout(() => {
-          currentIndex++;
-          if (currentIndex < questions.length) {
-            showQuestion();
-          } else {
-            document.getElementById("quiz").innerHTML = "<h2>🎉 You finished Level 1!</h2>";
-          }
-        }, 1000);
-      }
-    }
-
-    // Matching logic (simple toggle)
-    function attemptMatch(left, right) {
-      if (left.classList.contains("matched") && right.classList.contains("matched")) return;
-
-      if (left.dataset.left === right.dataset.right || left.dataset.left === right.innerText && right.dataset.right === left.innerText) {
-        left.classList.add("matched");
-        right.classList.add("matched");
-        feedback("Correct match!", true);
-      } else {
-        feedback("Wrong match, try again.", false);
-      }
-
-      // Check if all matched
-      const allMatched = document.querySelectorAll(".match-pair div").length / 2;
-      const matched = document.querySelectorAll(".match-pair div.matched").length / 2;
-      if (matched === allMatched) {
-        setTimeout(() => {
-          currentIndex++;
-          if (currentIndex < questions.length) {
-            showQuestion();
-          } else {
-            document.getElementById("quiz").innerHTML = "<h2>🎉 You finished Level 1!</h2>";
-          }
-        }, 1000);
-      }
-    }
-
-  </script>
+  });
+});
+</script>
 </body>
 </html>
