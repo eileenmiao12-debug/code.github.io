@@ -1,71 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 1: Variables — CodeMentor AI</title>
-<style>
-body { font-family: Arial, Helvetica, sans-serif; background: #f4f9ff; margin:0; padding:30px; text-align:center;}
-h1 { margin-bottom:10px;}
-.task { background:white; padding:20px; border-radius:10px; max-width:800px; margin:20px auto; box-shadow:0 8px 16px rgba(0,0,0,0.1); text-align:left;}
-textarea { width:100%; height:180px; margin-top:15px; font-family: monospace; font-size:14px; padding:10px;}
-button { margin-top:15px; padding:10px 20px; font-size:16px; cursor:pointer; border-radius:6px; border:none;}
-#result { margin-top:15px; font-weight:bold; font-size:18px;}
-#visual { margin-top:20px; font-family: monospace; background:#e0f7fa; padding:10px; border-radius:6px;}
-.back { margin-top:20px; display:inline-block; text-decoration:none; font-weight:bold;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Level 1: Variables - CodeMentor AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f0faff;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h1 {
+      font-family: 'Poppins', sans-serif;
+      color: #2f80ed;
+    }
+    .question-container {
+      background: white;
+      padding: 25px;
+      margin: 30px auto;
+      max-width: 600px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .options button, .next-btn {
+      display: block;
+      margin: 10px 0;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .options button:hover, .next-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .feedback {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+
+    /* Matching style */
+    .match-pair {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    .match-pair div {
+      padding: 10px 15px;
+      background: #e0f7fa;
+      border-radius: 8px;
+      cursor: grab;
+      user-select: none;
+    }
+    .matched {
+      background: #56ccf2 !important;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-<h1>Level 1: Variables</h1>
 
-<div class="task">
-<p><strong>Task:</strong> Create an integer variable named <code>age</code> and assign it <code>16</code>.</p>
-<p>Example:</p><pre>int number = 5;</pre>
-<textarea id="code" placeholder="Type your Java code here..."></textarea>
-<button onclick="checkCode()">Run Code</button>
-<div id="result"></div>
+  <h1>Level 1: Variables</h1>
 
-<button onclick="visualize()">Visualize Execution</button>
-<div id="visual"></div>
-</div>
+  <!-- Intro Explanation -->
+  <div class="question-container" id="intro">
+    <div class="question">
+      Variables store data in Java. You can think of them as labeled boxes that hold values.
+    </div>
+    <p>Example: <code>int age = 15;</code> stores the number 15 in a variable named age.</p>
+    <button class="next-btn" onclick="startQuiz()">Start Quiz</button>
+  </div>
 
-<a class="back" href="index.html">⬅ Back to Levels</a>
+  <!-- Quiz container -->
+  <div class="question-container" id="quiz" style="display:none;">
+    <div id="question-area"></div>
+    <div class="feedback" id="feedback"></div>
+  </div>
 
-<script>
-let failCount = 0;
+  <script>
+    const questions = [
+      {
+        type: "multiple-choice",
+        question: "Which of the following is a correct way to declare an integer variable in Java?",
+        options: ["int number = 10;", "number int = 10;", "int 10 = number;", "var number = 10;"],
+        answer: 0
+      },
+      {
+        type: "matching",
+        question: "Match the variable type to an example value:",
+        pairs: [
+          {left: "int", right: "42"},
+          {left: "double", right: "3.14"},
+          {left: "String", right: "\"Hello\""}
+        ]
+      },
+      {
+        type: "typing",
+        question: "Type the correct Java code to declare a variable 'score' with value 100.",
+        answer: "int score = 100;"
+      }
+    ];
 
-function normalize(text){ return text.replace(/\s+/g,'').toLowerCase(); }
+    let currentIndex = 0;
 
-function checkCode(){
-  const userCode = normalize(document.getElementById("code").value);
-  const resultDiv = document.getElementById("result");
-  
-  if(userCode.includes("intage=16") || userCode.includes("intage=16;")){
-    resultDiv.style.color = "green";
-    resultDiv.innerText = "✅ Correct! You defined age = 16.";
-    failCount = 0;
-  } else {
-    resultDiv.style.color = "red";
-    failCount++;
-    if(failCount>=3){
-      resultDiv.innerText = "⚠️ It seems you're stuck. Hint: Start with 'int age = 16;'";
-    } else {
-      resultDiv.innerText = "❌ Not quite right. Check variable name & syntax.";
+    function startQuiz() {
+      document.getElementById("intro").style.display = "none";
+      document.getElementById("quiz").style.display = "block";
+      showQuestion();
     }
-  }
-}
 
-// Simple visualization demo
-function visualize(){
-  const userCode = document.getElementById("code").value;
-  const visualDiv = document.getElementById("visual");
-  
-  if(userCode.includes("age") && userCode.includes("16")){
-    visualDiv.innerText = "Execution:\nint age = 16;\n▶ age = 16";
-  } else {
-    visualDiv.innerText = "Nothing to visualize. Try defining 'age' first.";
-  }
-}
-</script>
+    function showQuestion() {
+      const q = questions[currentIndex];
+      const area = document.getElementById("question-area");
+      area.innerHTML = "";
+      document.getElementById("feedback").innerText = "";
+
+      if (q.type === "multiple-choice") {
+        const qText = document.createElement("div");
+        qText.className = "question";
+        qText.innerText = q.question;
+        area.appendChild(qText);
+
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+        q.options.forEach((opt, idx) => {
+          const btn = document.createElement("button");
+          btn.innerText = opt;
+          btn.onclick = () => checkAnswer(idx);
+          optionsDiv.appendChild(btn);
+        });
+        area.appendChild(optionsDiv);
+      } 
+      else if (q.type === "matching") {
+        const qText = document.createElement("div");
+        qText.className = "question";
+        qText.innerText = q.question;
+        area.appendChild(qText);
+
+        // Simple click matching
+        q.pairs.forEach(pair => {
+          const pairDiv = document.createElement("div");
+          pairDiv.className = "match-pair";
+          const left = document.createElement("div");
+          left.innerText = pair.left;
+          left.dataset.left = pair.left;
+          const right = document.createElement("div");
+          right.innerText = pair.right;
+          right.dataset.right = pair.right;
+
+          left.onclick = () => attemptMatch(left, right);
+          right.onclick = () => attemptMatch(left, right);
+
+          pairDiv.appendChild(left);
+          pairDiv.appendChild(right);
+          area.appendChild(pairDiv);
+        });
+      } 
+      else if (q.type === "typing") {
+        const qText = document.createElement("div");
+        qText.className = "question";
+        qText.innerText = q.question;
+        area.appendChild(qText);
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = "typing-input";
+        area.appendChild(input);
+
+        const btn = document.createElement("button");
+        btn.innerText = "Submit";
+        btn.onclick = () => {
+          const val = document.getElementById("typing-input").value.trim();
+          if (val === q.answer) {
+            feedback("Correct!", true);
+          } else {
+            feedback("Try again!", false);
+          }
+        }
+        area.appendChild(btn);
+      }
+    }
+
+    function checkAnswer(idx) {
+      const q = questions[currentIndex];
+      if (idx === q.answer) {
+        feedback("Correct!", true);
+      } else {
+        feedback("Wrong, try again.", false);
+      }
+    }
+
+    function feedback(msg, correct) {
+      const fb = document.getElementById("feedback");
+      fb.innerText = msg;
+      fb.style.color = correct ? "green" : "red";
+
+      if (correct) {
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex < questions.length) {
+            showQuestion();
+          } else {
+            document.getElementById("quiz").innerHTML = "<h2>🎉 You finished Level 1!</h2>";
+          }
+        }, 1000);
+      }
+    }
+
+    // Matching logic (simple toggle)
+    function attemptMatch(left, right) {
+      if (left.classList.contains("matched") && right.classList.contains("matched")) return;
+
+      if (left.dataset.left === right.dataset.right || left.dataset.left === right.innerText && right.dataset.right === left.innerText) {
+        left.classList.add("matched");
+        right.classList.add("matched");
+        feedback("Correct match!", true);
+      } else {
+        feedback("Wrong match, try again.", false);
+      }
+
+      // Check if all matched
+      const allMatched = document.querySelectorAll(".match-pair div").length / 2;
+      const matched = document.querySelectorAll(".match-pair div.matched").length / 2;
+      if (matched === allMatched) {
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex < questions.length) {
+            showQuestion();
+          } else {
+            document.getElementById("quiz").innerHTML = "<h2>🎉 You finished Level 1!</h2>";
+          }
+        }, 1000);
+      }
+    }
+
+  </script>
 </body>
 </html>
