@@ -1,232 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JavaQuest Level 1 - Variables</title>
-  <style>
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f0f8ff;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
-    h1 { margin-bottom: 10px; }
-    .lesson {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 800px;
-      margin: 20px auto;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-      text-align: left;
-    }
-    iframe {
-      width: 100%;
-      height: 360px;
-      margin-top: 10px;
-      border-radius: 8px;
-    }
-    textarea {
-      width: 100%;
-      height: 120px;
-      margin-top: 15px;
-      font-family: monospace;
-      font-size: 14px;
-      padding: 10px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-      border-radius: 6px;
-      border: none;
-      background-color: #00796b;
-      color: white;
-    }
-    #result {
-      margin-top: 15px;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    .back {
-      margin-top: 20px;
-      display: inline-block;
-      text-decoration: none;
-      font-weight: bold;
-      color: #00796b;
-    }
-    #lives {
-      font-weight: bold;
-      font-size: 18px;
-      color: red;
-      margin-top: 10px;
-    }
-    .question {
-      margin-top: 15px;
-    }
-    .option-btn {
-      display: block;
-      margin: 8px 0;
-      padding: 8px 15px;
-      border: 1px solid #00796b;
-      border-radius: 5px;
-      cursor: pointer;
-      background: white;
-      transition: 0.2s;
-    }
-    .option-btn:hover {
-      background: #b2dfdb;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Level 1 - Variables</title>
+
+<style>
+body{
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(120deg,#c3e0ff,#f4f9ff);
+  text-align:center;
+  margin:0;
+  padding:20px;
+}
+h1{color:#2f80ed;}
+.lesson,.question{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  max-width:800px;
+  margin:20px auto;
+  box-shadow:0 8px 20px rgba(0,0,0,0.15);
+  text-align:left;
+  animation:fade 0.5s;
+}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
+button{
+  padding:10px 20px;
+  margin-top:15px;
+  border:none;
+  border-radius:6px;
+  background:#00796b;
+  color:white;
+  cursor:pointer;
+}
+button:hover{background:#004d40}
+#lives{font-size:18px;color:red;font-weight:bold}
+#xpbar{
+  width:80%;height:20px;background:#ddd;margin:10px auto;border-radius:10px;overflow:hidden;
+}
+#xpfill{
+  height:100%;width:0%;background:#56ccf2;transition:width 0.4s;
+}
+.correct{color:green;font-weight:bold}
+.wrong{color:red;font-weight:bold}
+#congrats{
+  display:none;
+  font-size:40px;
+  font-weight:bold;
+  color:#2f80ed;
+  animation:pop 1s infinite alternate;
+}
+@keyframes pop{from{transform:scale(1)}to{transform:scale(1.1)}}
+</style>
 </head>
+
 <body>
 
 <h1>Level 1: Variables</h1>
 <div id="lives">❤️ Lives: 3</div>
+<div id="xpbar"><div id="xpfill"></div></div>
 
-<div class="lesson">
-  <h2>Lesson 1: Variables in Java</h2>
-  <p>Variables store data in your program. For example:</p>
-  <pre>int age = 16;</pre>
-  <p>You can watch this video for more explanation:</p>
-  <iframe src="https://www.youtube.com/embed/Yo8pGgM-7jA" title="YouTube video lesson" allowfullscreen></iframe>
+<!-- Lesson -->
+<div class="lesson" id="lesson">
+<h2>What is a Variable?</h2>
+<p>A variable stores data in Java.</p>
+<pre>int age = 16;</pre>
+
+<iframe width="100%" height="315"
+src="https://www.youtube.com/embed/so1iUWaLmKA"
+allowfullscreen></iframe>
+
+<button onclick="startGame()">Start Practice</button>
 </div>
 
-<div id="question-container"></div>
+<div id="game"></div>
 
-<a class="back" href="index.html">⬅ Back to Homepage</a>
+<div id="congrats">🎉 CONGRATULATIONS! 🎉</div>
+
+<a href="index.html">⬅ Back Home</a>
+
+<audio id="correctSound" src="correct.mp3"></audio>
+<audio id="wrongSound" src="wrong.mp3"></audio>
 
 <script>
-const livesDisplay = document.getElementById("lives");
-let lives = 3;
+let lives=3, xp=0, questionIndex=0, reviveMode=false, reviveIndex=0;
 
-// 定义题目
-const questions = [
-  {type:"typing", question:"Create an integer variable named age and assign it 16.", answer:"int age = 16;", hint:"Use int followed by variable name and = value;"},
-  {type:"mcq", question:"Which type stores whole numbers?", options:["int","double","String"], answer:"int"},
-  {type:"match", question:"Match variable types with examples:", pairs:[["int","5"],["double","3.14"],["String","\"Hello\""]]},
-  {type:"typing", question:"Create a variable called name with value \"Alice\".", answer:'String name = "Alice";', hint:"Use String and quotes for text."},
-  {type:"mcq", question:"What is the correct way to declare a double?", options:["double x = 5.0;","int x = 5;","String x = 5;"], answer:"double x = 5.0;"}
+const questions=[
+ {type:"mcq",q:"Which is correct integer variable?",opts:["int age = 16;","double age = 16;","String age = 16;"],ans:"int age = 16;"},
+ {type:"typing",q:"Type: int age = 16;",ans:"int age = 16;",hint:"Use int and semicolon"},
+ {type:"mcq",q:"Which stores decimal numbers?",opts:["double","int","String"],ans:"double"}
 ];
 
-const reviveQuestions = [
-  {type:"typing", question:"Create int variable score=10", answer:"int score = 10;", hint:"Use int variableName = value;"},
-  {type:"mcq", question:"Which is correct to store text?", options:["String","int","boolean"], answer:"String"},
-  {type:"typing", question:"Create variable isReady=true", answer:"boolean isReady = true;", hint:"Use boolean variableName = true;"},
-  {type:"mcq", question:"Which stores decimal numbers?", options:["double","int","String"], answer:"double"},
-  {type:"typing", question:"Create variable pi=3.14", answer:"double pi = 3.14;", hint:"Use double variableName = value;"}
+const reviveQs=[
+ {q:"Type: int score = 10;",a:"int score = 10;"},
+ {q:"Which type stores text?",opts:["String","int","double"],a:"String"},
+ {q:"Type: double pi = 3.14;",a:"double pi = 3.14;"},
+ {q:"Which stores whole numbers?",opts:["int","double","String"],a:"int"},
+ {q:"Type: String name = \"Bob\";",a:'String name = "Bob";'}
 ];
 
-let currentQ = 0;
-let inRevive = false;
-
-function showQuestion() {
-  const container = document.getElementById("question-container");
-  container.innerHTML = "";
-
-  const q = inRevive ? reviveQuestions[currentQ] : questions[currentQ];
-
-  const qDiv = document.createElement("div");
-  qDiv.className = "question";
-
-  const qText = document.createElement("p");
-  qText.innerText = q.question;
-  qDiv.appendChild(qText);
-
-  if(q.type === "typing") {
-    const ta = document.createElement("textarea");
-    ta.id = "user-input";
-    ta.placeholder = "Type your answer here...";
-    qDiv.appendChild(ta);
-
-    const btn = document.createElement("button");
-    btn.innerText = "Submit";
-    btn.onclick = checkTyping;
-    qDiv.appendChild(btn);
-
-  } else if(q.type === "mcq") {
-    q.options.forEach(opt => {
-      const btn = document.createElement("button");
-      btn.innerText = opt;
-      btn.className = "option-btn";
-      btn.onclick = () => checkMCQ(opt);
-      qDiv.appendChild(btn);
-    });
-
-  } else if(q.type === "match") {
-    q.pairs.forEach(([key,val],i)=>{
-      const p = document.createElement("p");
-      p.innerText = `${key} → ${val}`;
-      qDiv.appendChild(p);
-    });
-    const btn = document.createElement("button");
-    btn.innerText = "Next";
-    btn.onclick = nextQuestion;
-    qDiv.appendChild(btn);
-  }
-
-  container.appendChild(qDiv);
+function updateXP(){
+ xp+=20;
+ document.getElementById("xpfill").style.width=xp+"%";
 }
 
-function checkTyping() {
-  const userInput = document.getElementById("user-input").value.trim();
-  const correctAnswer = (inRevive ? reviveQuestions[currentQ].answer : questions[currentQ].answer).trim();
-  const hint = (inRevive ? reviveQuestions[currentQ].hint : questions[currentQ].hint);
-
-  if(userInput === correctAnswer){
-    alert("✅ Correct!");
-    nextQuestion();
-  } else {
-    alert("❌ Wrong! Hint: " + hint);
-    loseLife();
-  }
+function loseLife(){
+ lives--;
+ document.getElementById("lives").innerText="❤️ Lives: "+lives;
+ document.getElementById("wrongSound").play();
+ if(lives<=0){
+   reviveMode=true;
+   reviveIndex=0;
+   alert("No lives! Complete 5 revive questions!");
+   showRevive();
+ }
 }
 
-function checkMCQ(selected) {
-  const correct = inRevive ? reviveQuestions[currentQ].answer : questions[currentQ].answer;
-  if(selected === correct){
-    alert("✅ Correct!");
-    nextQuestion();
-  } else {
-    alert("❌ Wrong!");
-    loseLife();
-  }
+function correctAnswer(){
+ document.getElementById("correctSound").play();
+ updateXP();
+ nextQuestion();
 }
 
-function nextQuestion() {
-  currentQ++;
-  const qList = inRevive ? reviveQuestions : questions;
-  if(currentQ >= qList.length){
-    if(inRevive){
-      alert("🎉 You are revived! Back to main questions.");
-      inRevive = false;
-      lives = 1;
-      livesDisplay.innerText = "❤️ Lives: " + lives;
-      currentQ = 0;
-    } else {
-      alert("🎉 Level 1 completed!");
-      window.location.href = "level2.html";
-      return;
-    }
-  }
-  showQuestion();
+function startGame(){
+ document.getElementById("lesson").style.display="none";
+ showQuestion();
 }
 
-function loseLife() {
-  lives--;
-  if(lives <= 0){
-    alert("💀 You lost all lives! Answer 5 revive questions to continue.");
-    inRevive = true;
-    currentQ = 0;
-  }
-  livesDisplay.innerText = "❤️ Lives: " + lives;
+function showQuestion(){
+ const g=document.getElementById("game");
+ g.innerHTML="";
+ if(questionIndex>=questions.length){
+   document.getElementById("congrats").style.display="block";
+   return;
+ }
+ const q=questions[questionIndex];
+ const div=document.createElement("div");
+ div.className="question";
+ div.innerHTML="<p>"+q.q+"</p>";
+
+ if(q.type==="mcq"){
+   q.opts.forEach(o=>{
+     const b=document.createElement("button");
+     b.innerText=o;
+     b.onclick=()=> o===q.ans?correctAnswer():loseLife();
+     div.appendChild(b);
+   });
+ }else{
+   const ta=document.createElement("textarea");
+   div.appendChild(ta);
+   const b=document.createElement("button");
+   b.innerText="Submit";
+   b.onclick=()=>{
+     ta.value.trim()===q.ans?correctAnswer():(alert("Hint: "+q.hint),loseLife());
+   };
+   div.appendChild(b);
+ }
+ g.appendChild(div);
 }
 
-// 初始化
-showQuestion();
+function nextQuestion(){
+ questionIndex++;
+ showQuestion();
+}
+
+function showRevive(){
+ const g=document.getElementById("game");
+ g.innerHTML="";
+ const r=reviveQs[reviveIndex];
+ const div=document.createElement("div");
+ div.className="question";
+ div.innerHTML="<p>Revive Question "+(reviveIndex+1)+": "+r.q+"</p>";
+
+ if(r.opts){
+   r.opts.forEach(o=>{
+     const b=document.createElement("button");
+     b.innerText=o;
+     b.onclick=()=>checkRevive(o,r.a);
+     div.appendChild(b);
+   });
+ }else{
+   const ta=document.createElement("textarea");
+   div.appendChild(ta);
+   const b=document.createElement("button");
+   b.innerText="Submit";
+   b.onclick=()=>checkRevive(ta.value.trim(),r.a);
+   div.appendChild(b);
+ }
+ g.appendChild(div);
+}
+
+function checkRevive(ans,correct){
+ if(ans===correct){
+   reviveIndex++;
+   if(reviveIndex>=reviveQs.length){
+     lives=2;
+     reviveMode=false;
+     alert("Revived! Back to game!");
+     showQuestion();
+   }else showRevive();
+ }else alert("Try again!");
+}
 </script>
+
 </body>
 </html>
