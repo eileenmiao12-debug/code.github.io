@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Java Adventure Map</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(#b3e5fc,#e1f5fe);
+  overflow-x:hidden;
+}
+.topbar{
+  padding:12px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:16px;
+  color:#01579b;
+}
+.map{
+  width:100%;
+  padding-top:40px;
+  padding-bottom:120px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:80px;
+}
+.level{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 6px 12px rgba(0,0,0,0.15);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:32px;
+  font-weight:bold;
+  cursor:pointer;
+  position:relative;
+}
+.level span{
+  position:absolute;
+  bottom:-26px;
+  font-size:14px;
+  color:#01579b;
+}
+.locked{
+  background:#ddd;
+  color:#888;
+  cursor:not-allowed;
+}
+.avatar{
+  width:80px;
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  transition:top 0.6s ease;
+}
+.navbar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  box-shadow:0 -4px 12px rgba(0,0,0,0.1);
+}
+.nav-item{
+  font-size:18px;
+  color:#0288d1;
+  font-weight:bold;
+  cursor:pointer;
+}
+.nav-item:hover{color:#01579b;}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+  <div>🪙 <span id="coins">0</span></div>
+  <div>❤️ <span id="lives">0</span></div>
+</div>
+
+<img id="avatar" class="avatar" src="https://cdn-icons-png.flaticon.com/512/1998/1998610.png"/>
+
+<div class="map">
+  <div class="level" id="lvl1" onclick="go(1)">1 <span>Variables</span></div>
+  <div class="level locked" id="lvl2" onclick="go(2)">2 <span>Conditions</span></div>
+  <div class="level locked" id="lvl3" onclick="go(3)">3 <span>Loops</span></div>
+</div>
+
+<div class="navbar">
+  <div class="nav-item" onclick="goHome()">🏠 Home</div>
+  <div class="nav-item" onclick="goShop()">🛒 Shop</div>
+  <div class="nav-item" onclick="goProfile()">👤 Profile</div>
+</div>
+
+<script>
+let coins = parseInt(localStorage.getItem("coins") || 0);
+let lives = parseInt(localStorage.getItem("extraLives") || 0);
+let progress = parseInt(localStorage.getItem("progress") || 1);
+
+document.getElementById("coins").innerText = coins;
+document.getElementById("lives").innerText = lives;
+
+// 解锁关卡
+for(let i=1;i<=progress;i++){
+  const el = document.getElementById("lvl"+i);
+  if(el) el.classList.remove("locked");
+}
+
+// 小人位置
+function updateAvatar(){
+  const target = document.getElementById("lvl"+progress);
+  const rect = target.getBoundingClientRect();
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  document.getElementById("avatar").style.top = (rect.top + scrollTop - 90) + "px";
+}
+window.onload = updateAvatar;
+window.onresize = updateAvatar;
+
+// 点击关卡：带小人“移动”动画
+function go(n){
+  if(n > progress) return;
+  const target = document.getElementById("lvl"+n);
+  const rect = target.getBoundingClientRect();
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const avatar = document.getElementById("avatar");
+  avatar.style.top = (rect.top + scrollTop - 90) + "px";
+
+  setTimeout(()=>{
+    window.location.href = "lesson"+n+".html";
+  }, 650);
+}
+
+function goHome(){ window.location.href = "index.html"; }
+function goShop(){ window.location.href = "shop.html"; }
+function goProfile(){ window.location.href = "profile.html"; }
+</script>
+
+</body>
+</html>
