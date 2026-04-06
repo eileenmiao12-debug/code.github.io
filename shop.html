@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Shop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+body{
+  font-family:Arial;
+  background:linear-gradient(#fff,#e0f7fa);
+  text-align:center;
+  padding-top:40px;
+  margin:0;
+}
+h1{color:#0d47a1;}
+.box{
+  background:white;
+  width:320px;
+  margin:auto;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 8px 18px rgba(0,0,0,0.1);
+}
+button{
+  padding:12px 20px;
+  background:#22c55e;
+  color:white;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:16px;
+}
+button:hover{background:#16a34a;}
+.navbar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  box-shadow:0 -4px 12px rgba(0,0,0,0.1);
+}
+.nav-item{
+  font-size:18px;
+  color:#0288d1;
+  font-weight:bold;
+  cursor:pointer;
+}
+.nav-item:hover{color:#01579b;}
+</style>
+</head>
+
+<body>
+
+<h1>🛒 Shop</h1>
+
+<div class="box">
+  <p>🪙 Coins: <span id="coinDisplay">0</span></p>
+  <p>❤️ Extra Lives: <span id="lifeDisplay">0</span></p>
+
+  <button onclick="buyLife()">Buy +1 Life (20 coins)</button>
+  <p id="msg"></p>
+</div>
+
+<div class="navbar">
+  <div class="nav-item" onclick="goHome()">🏠 Home</div>
+  <div class="nav-item" onclick="goMap()">🗺️ Map</div>
+  <div class="nav-item" onclick="goProfile()">👤 Profile</div>
+</div>
+
+<script>
+let coins = parseInt(localStorage.getItem("coins") || 0);
+let lives = parseInt(localStorage.getItem("extraLives") || 0);
+
+document.getElementById("coinDisplay").innerText = coins;
+document.getElementById("lifeDisplay").innerText = lives;
+
+function buyLife(){
+  if(coins >= 20){
+    coins -= 20;
+    lives += 1;
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("extraLives", lives);
+    document.getElementById("coinDisplay").innerText = coins;
+    document.getElementById("lifeDisplay").innerText = lives;
+    document.getElementById("msg").innerText = "✅ Purchased!";
+  }else{
+    document.getElementById("msg").innerText = "❌ Not enough coins!";
+  }
+}
+
+function goHome(){ window.location.href = "index.html"; }
+function goMap(){ window.location.href = "map.html"; }
+function goProfile(){ window.location.href = "profile.html"; }
+</script>
+
+</body>
+</html>
