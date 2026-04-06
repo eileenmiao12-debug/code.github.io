@@ -9,9 +9,9 @@
 body{
   margin:0;
   font-family:Arial, Helvetica, sans-serif;
-  background:linear-gradient(160deg,#b3e5fc,#e0f7fa,#ffffff);
+  background:linear-gradient(140deg,#b3e5fc,#e0f7fa,#ffffff);
   background-size:200% 200%;
-  animation:bgMove 8s ease infinite;
+  animation:bgMove 10s ease infinite;
   text-align:center;
 }
 @keyframes bgMove{
@@ -19,48 +19,58 @@ body{
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
 }
-header{padding-top:60px;}
+
+header{
+  padding-top:60px;
+}
+
 h1{
-  font-size:48px;
+  font-size:50px;
   font-weight:900;
   color:#0d47a1;
   margin-bottom:10px;
 }
+
 .subtitle{
-  font-size:20px;
+  font-size:22px;
   color:#01579b;
   margin-bottom:40px;
 }
+
 .avatar{
-  width:160px;
+  width:200px;
   animation:float 3s ease-in-out infinite;
 }
 @keyframes float{
   0%{transform:translateY(0);}
-  50%{transform:translateY(-12px);}
+  50%{transform:translateY(-14px);}
   100%{transform:translateY(0);}
 }
+
 button.start{
-  padding:16px 32px;
-  font-size:22px;
+  padding:18px 40px;
+  font-size:24px;
   border:none;
-  border-radius:12px;
+  border-radius:16px;
   background:#22c55e;
   color:white;
   font-weight:bold;
   cursor:pointer;
-  box-shadow:0 6px 12px rgba(0,0,0,0.2);
+  box-shadow:0 8px 16px rgba(0,0,0,0.2);
   transition:0.2s;
 }
 button.start:hover{
-  transform:scale(1.05);
+  transform:scale(1.06);
   background:#16a34a;
 }
+
 .stats{
   margin-top:40px;
-  font-size:20px;
+  font-size:22px;
   color:#0d47a1;
+  font-weight:bold;
 }
+
 .navbar{
   position:fixed;
   bottom:0;
@@ -69,16 +79,18 @@ button.start:hover{
   background:white;
   display:flex;
   justify-content:space-around;
-  padding:12px 0;
-  box-shadow:0 -4px 12px rgba(0,0,0,0.1);
+  padding:16px 0;
+  box-shadow:0 -4px 12px rgba(0,0,0,0.15);
 }
 .nav-item{
-  font-size:18px;
+  font-size:20px;
   color:#0288d1;
   font-weight:bold;
   cursor:pointer;
 }
-.nav-item:hover{color:#01579b;}
+.nav-item:hover{
+  color:#01579b;
+}
 </style>
 </head>
 
@@ -86,14 +98,14 @@ button.start:hover{
 
 <header>
   <h1>CodeMentor AI</h1>
-  <p class="subtitle">Learn Java. Level Up. Become unstoppable.</p>
+  <p class="subtitle">Master Java. Level Up. Become unstoppable.</p>
   <img class="avatar" src="https://cdn-icons-png.flaticon.com/512/1998/1998610.png"/>
 </header>
 
-<button class="start" onclick="startGame()">Start Adventure</button>
+<button class="start" onclick="startGame()">Start Learning</button>
 
 <div class="stats">
-  🪙 Coins: <span id="coins">0</span> &nbsp;&nbsp; ❤️ Lives: <span id="lives">0</span>
+  🪙 <span id="coins">0</span> &nbsp;&nbsp; ❤️ <span id="lives">0</span>
 </div>
 
 <div class="navbar">
@@ -111,11 +123,8 @@ if(localStorage.getItem("initialized") !== "1"){
   localStorage.setItem("initialized", "1");
 }
 
-let coins = parseInt(localStorage.getItem("coins") || 0);
-let lives = parseInt(localStorage.getItem("extraLives") || 0);
-
-document.getElementById("coins").innerText = coins;
-document.getElementById("lives").innerText = lives;
+document.getElementById("coins").innerText = localStorage.getItem("coins");
+document.getElementById("lives").innerText = localStorage.getItem("extraLives");
 
 function startGame(){ window.location.href = "map.html"; }
 function goMap(){ window.location.href = "map.html"; }
