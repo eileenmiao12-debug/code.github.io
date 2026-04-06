@@ -9,30 +9,76 @@
 body{
   margin:0;
   font-family:Arial, Helvetica, sans-serif;
-  background:linear-gradient(120deg,#e0f7fa,#ffffff);
+  background:linear-gradient(160deg,#b3e5fc,#e0f7fa,#ffffff);
+  background-size:200% 200%;
+  animation:bgMove 8s ease infinite;
   text-align:center;
 }
-header{padding:60px 20px}
-h1{font-size:48px;margin-bottom:10px}
-button{
-  padding:12px 22px;
+@keyframes bgMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+header{padding-top:60px;}
+h1{
+  font-size:48px;
+  font-weight:900;
+  color:#0d47a1;
+  margin-bottom:10px;
+}
+.subtitle{
+  font-size:20px;
+  color:#01579b;
+  margin-bottom:40px;
+}
+.avatar{
+  width:160px;
+  animation:float 3s ease-in-out infinite;
+}
+@keyframes float{
+  0%{transform:translateY(0);}
+  50%{transform:translateY(-12px);}
+  100%{transform:translateY(0);}
+}
+button.start{
+  padding:16px 32px;
+  font-size:22px;
   border:none;
-  border-radius:8px;
+  border-radius:12px;
   background:#22c55e;
   color:white;
   font-weight:bold;
   cursor:pointer;
+  box-shadow:0 6px 12px rgba(0,0,0,0.2);
+  transition:0.2s;
 }
-.shop{
+button.start:hover{
+  transform:scale(1.05);
+  background:#16a34a;
+}
+.stats{
   margin-top:40px;
-  padding:20px;
-  background:white;
-  border-radius:12px;
-  width:320px;
-  margin-left:auto;
-  margin-right:auto;
-  box-shadow:0 8px 18px rgba(0,0,0,0.1);
+  font-size:20px;
+  color:#0d47a1;
 }
+.navbar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  box-shadow:0 -4px 12px rgba(0,0,0,0.1);
+}
+.nav-item{
+  font-size:18px;
+  color:#0288d1;
+  font-weight:bold;
+  cursor:pointer;
+}
+.nav-item:hover{color:#01579b;}
 </style>
 </head>
 
@@ -40,38 +86,41 @@ button{
 
 <header>
   <h1>CodeMentor AI</h1>
-  <p>Learn Java like a game. Earn coins. Buy lives. Level up.</p>
-  <button onclick="start()">Start Level 1</button>
+  <p class="subtitle">Learn Java. Level Up. Become unstoppable.</p>
+  <img class="avatar" src="https://cdn-icons-png.flaticon.com/512/1998/1998610.png"/>
 </header>
 
-<div class="shop">
-  <h2>🛒 Shop</h2>
-  <p>🪙 Coins: <span id="coinDisplay">0</span></p>
-  <button onclick="buyLife()">Buy +1 Life (20 coins)</button>
-  <p id="shopMsg"></p>
+<button class="start" onclick="startGame()">Start Adventure</button>
+
+<div class="stats">
+  🪙 Coins: <span id="coins">0</span> &nbsp;&nbsp; ❤️ Lives: <span id="lives">0</span>
+</div>
+
+<div class="navbar">
+  <div class="nav-item" onclick="goMap()">🗺️ Map</div>
+  <div class="nav-item" onclick="goShop()">🛒 Shop</div>
+  <div class="nav-item" onclick="goProfile()">👤 Profile</div>
 </div>
 
 <script>
+if(localStorage.getItem("initialized") !== "1"){
+  localStorage.setItem("coins", "0");
+  localStorage.setItem("extraLives", "3");
+  localStorage.setItem("progress", "1");
+  localStorage.setItem("lessonsCompleted", "0");
+  localStorage.setItem("initialized", "1");
+}
+
 let coins = parseInt(localStorage.getItem("coins") || 0);
-let extraLives = parseInt(localStorage.getItem("extraLives") || 0);
-document.getElementById("coinDisplay").innerText = coins;
+let lives = parseInt(localStorage.getItem("extraLives") || 0);
 
-function buyLife(){
-  if(coins >= 20){
-    coins -= 20;
-    extraLives += 1;
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("extraLives", extraLives);
-    document.getElementById("coinDisplay").innerText = coins;
-    document.getElementById("shopMsg").innerText = "✅ You bought 1 extra life!";
-  }else{
-    document.getElementById("shopMsg").innerText = "❌ Not enough coins!";
-  }
-}
+document.getElementById("coins").innerText = coins;
+document.getElementById("lives").innerText = lives;
 
-function start(){
-  window.location.href="level1.html";
-}
+function startGame(){ window.location.href = "map.html"; }
+function goMap(){ window.location.href = "map.html"; }
+function goShop(){ window.location.href = "shop.html"; }
+function goProfile(){ window.location.href = "profile.html"; }
 </script>
 
 </body>
