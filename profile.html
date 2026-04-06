@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Profile</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <style>
 body{
   font-family:Arial;
@@ -12,24 +13,40 @@ body{
   padding-top:40px;
   margin:0;
 }
+
 .card{
   background:white;
-  width:320px;
+  width:360px;
   margin:auto;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 8px 18px rgba(0,0,0,0.1);
+  padding:28px;
+  border-radius:18px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.12);
 }
-h1{color:#0d47a1;}
-.stat{margin:8px 0;font-size:16px;}
+
+h1{
+  color:#0d47a1;
+  margin-bottom:20px;
+  font-size:36px;
+}
+
+.stat{
+  margin:12px 0;
+  font-size:20px;
+  color:#01579b;
+  font-weight:bold;
+}
+
 .badge{
   display:inline-block;
-  margin-top:12px;
-  padding:6px 12px;
+  margin-top:20px;
+  padding:10px 20px;
   border-radius:999px;
   background:#ffeb3b;
   font-weight:bold;
+  font-size:18px;
+  color:#795548;
 }
+
 .navbar{
   position:fixed;
   bottom:0;
@@ -38,22 +55,24 @@ h1{color:#0d47a1;}
   background:white;
   display:flex;
   justify-content:space-around;
-  padding:12px 0;
-  box-shadow:0 -4px 12px rgba(0,0,0,0.1);
+  padding:16px 0;
+  box-shadow:0 -4px 12px rgba(0,0,0,0.15);
 }
 .nav-item{
-  font-size:18px;
+  font-size:20px;
   color:#0288d1;
   font-weight:bold;
   cursor:pointer;
 }
-.nav-item:hover{color:#01579b;}
+.nav-item:hover{
+  color:#01579b;
+}
 </style>
 </head>
 
 <body>
 
-<h1>👤 Profile</h1>
+<h1>Your Profile</h1>
 
 <div class="card">
   <div class="stat">🪙 Coins: <span id="coins">0</span></div>
@@ -71,10 +90,10 @@ h1{color:#0d47a1;}
 </div>
 
 <script>
-let coins = parseInt(localStorage.getItem("coins") || 0);
-let lives = parseInt(localStorage.getItem("extraLives") || 0);
-let progress = parseInt(localStorage.getItem("progress") || 1);
-let lessonsCompleted = parseInt(localStorage.getItem("lessonsCompleted") || 0);
+let coins = localStorage.getItem("coins");
+let lives = localStorage.getItem("extraLives");
+let progress = localStorage.getItem("progress");
+let lessonsCompleted = localStorage.getItem("lessonsCompleted");
 
 document.getElementById("coins").innerText = coins;
 document.getElementById("lives").innerText = lives;
@@ -82,12 +101,15 @@ document.getElementById("progress").innerText = progress;
 document.getElementById("lessons").innerText = lessonsCompleted;
 
 const badgeArea = document.getElementById("badgeArea");
+
 if(lessonsCompleted >= 3){
   badgeArea.innerHTML = '<div class="badge">🏅 Java Beginner Master</div>';
 }else if(lessonsCompleted >= 1){
   badgeArea.innerHTML = '<div class="badge">🎖️ First Steps in Java</div>';
 }
+</script>
 
+<script>
 function goHome(){ window.location.href = "index.html"; }
 function goMap(){ window.location.href = "map.html"; }
 function goShop(){ window.location.href = "shop.html"; }
