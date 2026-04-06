@@ -7,10 +7,16 @@
 
 <style>
 body{
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   background:linear-gradient(#e3f2fd,#ffffff);
-  padding:20px;
   margin:0;
+  padding:0;
+}
+
+.container{
+  max-width:800px;
+  margin:0 auto;
+  padding:20px;
 }
 
 h1{
@@ -33,62 +39,76 @@ h1{
   margin-bottom:20px;
 }
 
-button{
-  padding:12px 20px;
-  border:none;
-  border-radius:10px;
-  background:#22c55e;
-  color:white;
-  font-size:18px;
-  font-weight:bold;
-  cursor:pointer;
+.video-wrapper{
+  position:relative;
+  padding-bottom:56.25%;
+  height:0;
+  overflow:hidden;
+  border-radius:12px;
+  margin-bottom:16px;
 }
-button:hover{ background:#16a34a; }
+.video-wrapper iframe{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  border:0;
+}
 
 input[type="text"]{
-  width:90%;
+  width:100%;
   padding:10px;
   border-radius:8px;
   border:1px solid #bbb;
   margin-top:10px;
+  font-size:16px;
 }
 
-.match-container{
+select{
+  padding:8px;
+  border-radius:8px;
+  border:1px solid #bbb;
+  font-size:16px;
+}
+
+button{
+  padding:10px 18px;
+  border:none;
+  border-radius:10px;
+  background:#22c55e;
+  color:white;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:disabled{
+  background:#9e9e9e;
+  cursor:not-allowed;
+}
+button:hover:enabled{
+  background:#16a34a;
+}
+
+.navbar{
   display:flex;
   justify-content:space-between;
-  padding:10px;
+  margin-top:10px;
 }
 
-.left, .right{
-  width:45%;
-}
-
-.draggable{
-  padding:10px;
-  background:#bbdefb;
-  margin:6px 0;
-  border-radius:8px;
-  cursor:grab;
-}
-
-.dropzone{
-  padding:10px;
-  background:#e1f5fe;
-  margin:6px 0;
-  border-radius:8px;
-  min-height:40px;
-  border:2px dashed #90caf9;
+.feedback{
+  margin-top:10px;
+  font-size:16px;
 }
 
 .correct{
-  animation:correctFlash 0.4s ease;
+  color:#2e7d32;
 }
-@keyframes correctFlash{
-  0%{background:#c8e6c9;}
-  100%{background:white;}
+.wrong{
+  color:#c62828;
 }
 
-.wrong{
+.shake{
   animation:shake 0.3s ease;
 }
 @keyframes shake{
@@ -99,61 +119,98 @@ input[type="text"]{
   100%{transform:translateX(0);}
 }
 
-.hidden{ display:none; }
+.hidden{
+  display:none;
+}
+
+.revive-title{
+  text-align:center;
+  color:#c62828;
+  margin-bottom:10px;
+}
 </style>
 </head>
 
 <body>
+<div class="container">
 
-<h1>Lesson 1: Variables</h1>
+  <h1>Lesson 1: Variables</h1>
 
-<div class="info">
-  🪙 Coins: <span id="coins">0</span> &nbsp;&nbsp;
-  ❤️ Lives: <span id="lives">0</span>
-</div>
+  <div class="info">
+    🪙 Coins: <span id="coins">0</span> &nbsp;&nbsp;
+    ❤️ Lives: <span id="lives">0</span> &nbsp;&nbsp;
+    Question <span id="qIndexDisplay">1</span> / 10
+  </div>
 
-<!-- MULTIPLE CHOICE -->
-<div class="card" id="q1">
-  <h3>1. Which line correctly declares an integer variable?</h3>
-  <label><input type="radio" name="q1" value="a"> int age = "18";</label><br/>
-  <label><input type="radio" name="q1" value="b"> int age = 18;</label><br/>
-  <label><input type="radio" name="q1" value="c"> age int = 18;</label>
-</div>
-
-<!-- FILL IN THE BLANK -->
-<div class="card" id="q2">
-  <h3>2. Fill in the blank: Declare a String variable named <b>name</b> with value "Alice".</h3>
-  <input type="text" id="fill1" placeholder='Type your answer here...'>
-</div>
-
-<!-- MATCHING -->
-<div class="card" id="q3">
-  <h3>3. Match the variable type with an example value.</h3>
-
-  <div class="match-container">
-    <div class="left">
-      <div class="draggable" draggable="true" id="drag-int">int</div>
-      <div class="draggable" draggable="true" id="drag-string">String</div>
+  <!-- Teaching Section -->
+  <div class="card" id="teachingSection">
+    <h2>Teaching: Java Variables</h2>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/so1iUWaLmKA"
+              title="Java Variables"
+              allowfullscreen></iframe>
     </div>
+    <p>
+      In Java, a <b>variable</b> is a named container that holds a value.
+      Every variable has a <b>type</b> (such as <code>int</code>, <code>double</code>, or <code>String</code>)
+      and a <b>name</b> that you choose. For example:
+    </p>
+    <pre>
+int age = 25;
+String name = "Alice";
+double price = 19.99;
+    </pre>
+    <p>
+      The type tells Java what kind of data the variable can store.
+      An <code>int</code> stores whole numbers, a <code>double</code> stores decimal numbers,
+      and a <code>String</code> stores text. Variable names should be descriptive and follow
+      Java naming rules: they cannot start with a number, cannot contain spaces, and are
+      usually written in <b>camelCase</b>, like <code>userAge</code> or <code>totalPrice</code>.
+    </p>
+    <p>
+      You can also change the value of a variable after it is declared:
+    </p>
+    <pre>
+int score = 0;
+score = 10;   // update the value
+    </pre>
+    <p>
+      Understanding variables is the foundation of Java programming. In this lesson,
+      you will practice declaring variables, choosing correct types, and recognizing valid syntax.
+    </p>
+  </div>
 
-    <div class="right">
-      <div class="dropzone" data-answer="int">18</div>
-      <div class="dropzone" data-answer="String">"Hello"</div>
+  <!-- Main Quiz Section -->
+  <div class="card" id="quizCard">
+    <h2 id="questionTitle"></h2>
+    <div id="questionBody"></div>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="navbar">
+      <button id="prevBtn" onclick="goPrev()">Previous</button>
+      <button id="submitBtn" onclick="submitAnswer()">Submit</button>
+      <button id="nextBtn" onclick="goNext()" disabled>Next</button>
     </div>
   </div>
-</div>
 
-<button onclick="submitQuiz()">Submit Answers</button>
+  <!-- Revive Section -->
+  <div class="card hidden" id="reviveCard">
+    <h2 class="revive-title">Revive Mode</h2>
+    <p>You ran out of lives. Answer 5 quick questions to revive +1 life.</p>
+    <h3 id="reviveQuestionTitle"></h3>
+    <div id="reviveQuestionBody"></div>
+    <div class="feedback" id="reviveFeedback"></div>
+    <div class="navbar">
+      <span></span>
+      <button id="reviveSubmitBtn" onclick="submitRevive()">Submit</button>
+      <span></span>
+    </div>
+  </div>
 
-<!-- REVIVE MODE -->
-<div id="reviveSection" class="hidden">
-  <h2>💀 You ran out of lives!</h2>
-  <p>Solve 5 quick questions to revive +1 life.</p>
-  <button onclick="revive()">Start Revive Challenge</button>
 </div>
 
 <script>
-// ------------------ GLOBAL STATE ------------------
+// ---------------- GLOBAL STATE ----------------
 let coins = parseInt(localStorage.getItem("coins") || 0);
 let lives = parseInt(localStorage.getItem("extraLives") || 3);
 let progress = parseInt(localStorage.getItem("progress") || 1);
@@ -162,83 +219,473 @@ let lessonsCompleted = parseInt(localStorage.getItem("lessonsCompleted") || 0);
 document.getElementById("coins").innerText = coins;
 document.getElementById("lives").innerText = lives;
 
-// ------------------ DRAG & DROP ------------------
-let dragged = null;
+// Main quiz questions (10 total, difficulty: intermediate)
+const questions = [
+  {
+    id: 1,
+    type: "mcq",
+    title: "1. Which declaration correctly creates an int variable named age with value 18?",
+    options: [
+      'int age = 18;',
+      'int 18 = age;',
+      'age int = 18;',
+      'int age = "18";'
+    ],
+    correctIndex: 0,
+    explanation: 'Correct syntax: type name = value; and the value must match the type.'
+  },
+  {
+    id: 2,
+    type: "fill",
+    title: '2. Fill in the blank to declare a String variable named name with value "Alice".',
+    placeholder: 'Type the full Java statement...',
+    correctText: 'String name = "Alice";',
+    explanation: 'String variables use double quotes and the syntax: String name = "value";'
+  },
+  {
+    id: 3,
+    type: "truefalse",
+    title: "3. True or False: A variable name in Java can start with a number.",
+    statement: "A variable name in Java can start with a number.",
+    correct: false,
+    explanation: 'Variable names cannot start with a digit. They must start with a letter, $, or _.'
+  },
+  {
+    id: 4,
+    type: "mcq",
+    title: "4. Which type is best for storing a price like 19.99?",
+    options: [
+      'int',
+      'double',
+      'String',
+      'boolean'
+    ],
+    correctIndex: 1,
+    explanation: 'double is used for decimal (floating-point) numbers.'
+  },
+  {
+    id: 5,
+    type: "code",
+    title: "5. Complete the code to declare an int variable score with initial value 0.",
+    before: "",
+    after: "",
+    placeholder: 'Type only the declaration line...',
+    correctText: 'int score = 0;',
+    explanation: 'Use: int score = 0; with a semicolon at the end.'
+  },
+  {
+    id: 6,
+    type: "mcq",
+    title: "6. Which of the following is a valid variable name in Java?",
+    options: [
+      '1stNumber',
+      'total-score',
+      'userName',
+      'class'
+    ],
+    correctIndex: 2,
+    explanation: 'userName is valid. Names cannot start with a digit, cannot contain hyphens, and cannot be reserved keywords like class.'
+  },
+  {
+    id: 7,
+    type: "fill",
+    title: "7. Fill in the blank: Change the value of an existing int variable age to 30.",
+    placeholder: 'Type the Java statement...',
+    correctText: 'age = 30;',
+    explanation: 'To update a variable, just assign a new value: age = 30;'
+  },
+  {
+    id: 8,
+    type: "truefalse",
+    title: "8. True or False: The following is valid: String city = \"Paris\";",
+    statement: 'String city = "Paris";',
+    correct: true,
+    explanation: 'This is a correct String declaration with a text value in double quotes.'
+  },
+  {
+    id: 9,
+    type: "match",
+    title: "9. Match the type with the best example value.",
+    pairs: [
+      { left: "int", rightOptions: ["25", "\"Hello\"", "true"], correct: "25" },
+      { left: "String", rightOptions: ["25", "\"Hello\"", "true"], correct: "\"Hello\"" },
+      { left: "boolean", rightOptions: ["25", "\"Hello\"", "true"], correct: "true" }
+    ],
+    explanation: 'int → whole numbers, String → text in quotes, boolean → true/false.'
+  },
+  {
+    id: 10,
+    type: "mcq",
+    title: "10. Which statement correctly declares and initializes a double variable named temperature?",
+    options: [
+      'double temperature = 36.5;',
+      'double temperature = "36.5";',
+      'temperature double = 36.5;',
+      'double = 36.5 temperature;'
+    ],
+    correctIndex: 0,
+    explanation: 'Correct syntax: type name = value; and the value must be a number for double.'
+  }
+];
 
-document.querySelectorAll(".draggable").forEach(el=>{
-  el.addEventListener("dragstart", ()=> dragged = el);
-});
+let currentIndex = 0; // 0-based index for questions array
+let answered = Array(questions.length).fill(false);
 
-document.querySelectorAll(".dropzone").forEach(zone=>{
-  zone.addEventListener("dragover", e=> e.preventDefault());
-  zone.addEventListener("drop", ()=>{
-    zone.innerHTML = "";
-    zone.appendChild(dragged);
+// Revive questions pool (20 simple questions)
+const revivePool = [];
+for(let i=1;i<=20;i++){
+  revivePool.push({
+    id: i,
+    type: "mcq",
+    title: `Revive Q${i}: Which type is used for whole numbers in Java?`,
+    options: ['int','String','double','boolean'],
+    correctIndex: 0,
+    explanation: 'int is used for whole numbers.'
   });
-});
+}
 
-// ------------------ QUIZ SUBMISSION ------------------
-function submitQuiz(){
-  if(lives <= 0){
-    document.getElementById("reviveSection").classList.remove("hidden");
-    return;
+let inReviveMode = false;
+let reviveQuestions = [];
+let reviveIndex = 0;
+let reviveAnsweredCount = 0;
+
+// ---------------- RENDER MAIN QUESTION ----------------
+function renderQuestion(){
+  inReviveMode = false;
+  document.getElementById("reviveCard").classList.add("hidden");
+  document.getElementById("quizCard").classList.remove("hidden");
+  document.getElementById("teachingSection").classList.add("hidden");
+
+  const q = questions[currentIndex];
+  document.getElementById("qIndexDisplay").innerText = (currentIndex+1);
+  document.getElementById("feedback").innerHTML = "";
+
+  const titleEl = document.getElementById("questionTitle");
+  const bodyEl = document.getElementById("questionBody");
+  const nextBtn = document.getElementById("nextBtn");
+
+  nextBtn.disabled = !answered[currentIndex];
+
+  titleEl.textContent = q.title;
+  bodyEl.innerHTML = "";
+
+  if(q.type === "mcq"){
+    q.options.forEach((opt, idx)=>{
+      const label = document.createElement("label");
+      label.style.display = "block";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "mcq";
+      input.value = idx;
+      input.style.marginRight = "8px";
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(opt));
+      bodyEl.appendChild(label);
+    });
+  }else if(q.type === "fill"){
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "fillInput";
+    input.placeholder = q.placeholder;
+    bodyEl.appendChild(input);
+  }else if(q.type === "truefalse"){
+    const p = document.createElement("p");
+    p.textContent = q.statement;
+    bodyEl.appendChild(p);
+
+    const labelT = document.createElement("label");
+    labelT.style.display = "block";
+    const inputT = document.createElement("input");
+    inputT.type = "radio";
+    inputT.name = "tf";
+    inputT.value = "true";
+    inputT.style.marginRight = "8px";
+    labelT.appendChild(inputT);
+    labelT.appendChild(document.createTextNode("True"));
+    bodyEl.appendChild(labelT);
+
+    const labelF = document.createElement("label");
+    labelF.style.display = "block";
+    const inputF = document.createElement("input");
+    inputF.type = "radio";
+    inputF.name = "tf";
+    inputF.value = "false";
+    inputF.style.marginRight = "8px";
+    labelF.appendChild(inputF);
+    labelF.appendChild(document.createTextNode("False"));
+    bodyEl.appendChild(labelF);
+  }else if(q.type === "code"){
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "codeInput";
+    input.placeholder = q.placeholder;
+    bodyEl.appendChild(input);
+  }else if(q.type === "match"){
+    q.pairs.forEach((pair, idx)=>{
+      const row = document.createElement("div");
+      row.style.marginBottom = "10px";
+
+      const label = document.createElement("span");
+      label.textContent = pair.left + " → ";
+      row.appendChild(label);
+
+      const select = document.createElement("select");
+      select.id = "match-" + idx;
+      const defaultOpt = document.createElement("option");
+      defaultOpt.value = "";
+      defaultOpt.textContent = "Select...";
+      select.appendChild(defaultOpt);
+
+      pair.rightOptions.forEach(opt=>{
+        const o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        select.appendChild(o);
+      });
+
+      row.appendChild(select);
+      bodyEl.appendChild(row);
+    });
   }
 
-  let correct = 0;
+  document.getElementById("prevBtn").disabled = (currentIndex === 0);
+}
 
-  // Q1
-  const q1 = document.querySelector("input[name='q1']:checked");
-  if(q1 && q1.value === "b") correct++;
-  else loseLife("q1");
+// ---------------- SUBMIT MAIN ANSWER ----------------
+function submitAnswer(){
+  if(inReviveMode) return;
 
-  // Q2
-  const fill = document.getElementById("fill1").value.trim();
-  if(fill === `String name = "Alice";`) correct++;
-  else loseLife("q2");
+  const q = questions[currentIndex];
+  const feedbackEl = document.getElementById("feedback");
+  feedbackEl.classList.remove("correct","wrong","shake");
 
-  // Q3
-  let matchCorrect = true;
-  document.querySelectorAll(".dropzone").forEach(zone=>{
-    const child = zone.querySelector(".draggable");
-    if(!child || child.id.replace("drag-","") !== zone.dataset.answer){
-      matchCorrect = false;
+  let isCorrect = false;
+  let userAnswer = null;
+
+  if(q.type === "mcq"){
+    const selected = document.querySelector("input[name='mcq']:checked");
+    if(!selected){
+      feedbackEl.textContent = "Please select an answer before submitting.";
+      return;
     }
-  });
-  if(matchCorrect) correct++;
-  else loseLife("q3");
+    userAnswer = parseInt(selected.value);
+    isCorrect = (userAnswer === q.correctIndex);
+  }else if(q.type === "fill"){
+    const input = document.getElementById("fillInput");
+    if(!input.value.trim()){
+      feedbackEl.textContent = "Please type your answer before submitting.";
+      return;
+    }
+    userAnswer = input.value.trim();
+    isCorrect = (userAnswer === q.correctText);
+  }else if(q.type === "truefalse"){
+    const selected = document.querySelector("input[name='tf']:checked");
+    if(!selected){
+      feedbackEl.textContent = "Please select True or False before submitting.";
+      return;
+    }
+    userAnswer = (selected.value === "true");
+    isCorrect = (userAnswer === q.correct);
+  }else if(q.type === "code"){
+    const input = document.getElementById("codeInput");
+    if(!input.value.trim()){
+      feedbackEl.textContent = "Please type your code before submitting.";
+      return;
+    }
+    userAnswer = input.value.trim();
+    isCorrect = (userAnswer === q.correctText);
+  }else if(q.type === "match"){
+    let allSelected = true;
+    let allCorrect = true;
+    q.pairs.forEach((pair, idx)=>{
+      const select = document.getElementById("match-"+idx);
+      if(!select.value){
+        allSelected = false;
+      }else if(select.value !== pair.correct){
+        allCorrect = false;
+      }
+    });
+    if(!allSelected){
+      feedbackEl.textContent = "Please complete all matches before submitting.";
+      return;
+    }
+    isCorrect = allCorrect;
+  }
 
-  if(lives <= 0){
-    document.getElementById("reviveSection").classList.remove("hidden");
+  answered[currentIndex] = true;
+  document.getElementById("nextBtn").disabled = false;
+
+  if(isCorrect){
+    feedbackEl.textContent = "Correct! Well done.";
+    feedbackEl.classList.add("correct");
+    setTimeout(()=>{
+      goNext();
+    }, 600);
+  }else{
+    lives -= 1;
+    localStorage.setItem("extraLives", lives);
+    document.getElementById("lives").innerText = lives;
+
+    feedbackEl.innerHTML = `Incorrect. Correct answer: <br><b>${getCorrectAnswerText(q)}</b><br><span>${q.explanation}</span>`;
+    feedbackEl.classList.add("wrong","shake");
+
+    if(lives <= 0){
+      setTimeout(()=>{
+        startReviveMode();
+      }, 800);
+    }else{
+      setTimeout(()=>{
+        goNext();
+      }, 800);
+    }
+  }
+}
+
+// Helper: get correct answer text for display
+function getCorrectAnswerText(q){
+  if(q.type === "mcq"){
+    return q.options[q.correctIndex];
+  }else if(q.type === "fill" || q.type === "code"){
+    return q.correctText;
+  }else if(q.type === "truefalse"){
+    return q.correct ? "True" : "False";
+  }else if(q.type === "match"){
+    return q.pairs.map(p=>`${p.left} → ${p.correct}`).join(", ");
+  }
+  return "";
+}
+
+// ---------------- NAVIGATION ----------------
+function goPrev(){
+  if(currentIndex > 0){
+    currentIndex--;
+    renderQuestion();
+  }
+}
+
+function goNext(){
+  if(currentIndex < questions.length - 1){
+    currentIndex++;
+    renderQuestion();
+  }else{
+    finishLesson();
+  }
+}
+
+// ---------------- FINISH LESSON ----------------
+function finishLesson(){
+  // Award coins and update progress
+  coins += 10;
+  lessonsCompleted += 1;
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("lessonsCompleted", lessonsCompleted);
+  if(progress < 2){
+    localStorage.setItem("progress", 2);
+  }
+  alert("Lesson completed! You earned +10 coins.");
+  window.location.href = "map.html";
+}
+
+// ---------------- REVIVE MODE ----------------
+function startReviveMode(){
+  inReviveMode = true;
+  document.getElementById("quizCard").classList.add("hidden");
+  document.getElementById("reviveCard").classList.remove("hidden");
+  document.getElementById("teachingSection").classList.add("hidden");
+  prepareReviveQuestions();
+  renderReviveQuestion();
+}
+
+function prepareReviveQuestions(){
+  // pick 5 unique random questions from revivePool
+  const poolCopy = [...revivePool];
+  reviveQuestions = [];
+  for(let i=0;i<5;i++){
+    const idx = Math.floor(Math.random()*poolCopy.length);
+    reviveQuestions.push(poolCopy[idx]);
+    poolCopy.splice(idx,1);
+  }
+  reviveIndex = 0;
+  reviveAnsweredCount = 0;
+  document.getElementById("reviveFeedback").innerHTML = "";
+}
+
+function renderReviveQuestion(){
+  const q = reviveQuestions[reviveIndex];
+  const titleEl = document.getElementById("reviveQuestionTitle");
+  const bodyEl = document.getElementById("reviveQuestionBody");
+  const feedbackEl = document.getElementById("reviveFeedback");
+
+  feedbackEl.innerHTML = "";
+  feedbackEl.classList.remove("correct","wrong","shake");
+
+  titleEl.textContent = q.title;
+  bodyEl.innerHTML = "";
+
+  if(q.type === "mcq"){
+    q.options.forEach((opt, idx)=>{
+      const label = document.createElement("label");
+      label.style.display = "block";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "reviveMcq";
+      input.value = idx;
+      input.style.marginRight = "8px";
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(opt));
+      bodyEl.appendChild(label);
+    });
+  }
+}
+
+function submitRevive(){
+  const q = reviveQuestions[reviveIndex];
+  const feedbackEl = document.getElementById("reviveFeedback");
+  feedbackEl.classList.remove("correct","wrong","shake");
+
+  const selected = document.querySelector("input[name='reviveMcq']:checked");
+  if(!selected){
+    feedbackEl.textContent = "Please select an answer before submitting.";
     return;
   }
+  const userAnswer = parseInt(selected.value);
+  const isCorrect = (userAnswer === q.correctIndex);
 
-  if(correct === 3){
-    coins += 10;
-    lessonsCompleted += 1;
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("lessonsCompleted", lessonsCompleted);
-    if(progress < 2) localStorage.setItem("progress", 2);
-
-    alert("Perfect! +10 coins");
-    window.location.href = "map.html";
+  if(isCorrect){
+    feedbackEl.textContent = "Correct!";
+    feedbackEl.classList.add("correct");
+  }else{
+    feedbackEl.innerHTML = `Incorrect. Correct answer: <b>${q.options[q.correctIndex]}</b>`;
+    feedbackEl.classList.add("wrong","shake");
   }
+
+  reviveAnsweredCount++;
+
+  setTimeout(()=>{
+    if(reviveAnsweredCount >= 5){
+      // Revive success
+      lives = 1;
+      localStorage.setItem("extraLives", lives);
+      document.getElementById("lives").innerText = lives;
+      alert("You revived! +1 life. Continue your lesson.");
+      inReviveMode = false;
+      document.getElementById("reviveCard").classList.add("hidden");
+      document.getElementById("quizCard").classList.remove("hidden");
+      renderQuestion();
+    }else{
+      reviveIndex++;
+      renderReviveQuestion();
+    }
+  }, 600);
 }
 
-function loseLife(qid){
-  lives -= 1;
-  localStorage.setItem("extraLives", lives);
-  document.getElementById("lives").innerText = lives;
-  document.getElementById(qid).classList.add("wrong");
-  setTimeout(()=> document.getElementById(qid).classList.remove("wrong"), 400);
-}
-
-// ------------------ REVIVE MODE ------------------
-function revive(){
-  alert("Revive successful! +1 life");
-  lives = 1;
-  localStorage.setItem("extraLives", lives);
-  window.location.reload();
-}
+// ---------------- INIT ----------------
+window.onload = function(){
+  // hide teaching after first load and go to question 1
+  // if you want to force teaching first, you can keep it visible and add a "Start Quiz" button
+  document.getElementById("teachingSection").classList.add("hidden");
+  renderQuestion();
+};
 </script>
 
 </body>
