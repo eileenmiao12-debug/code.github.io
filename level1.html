@@ -1,207 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Level 1 - Variables</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Level 1 — Variables</title>
 
 <style>
-body{
-  font-family: Arial, Helvetica, sans-serif;
-  background: linear-gradient(120deg,#c3e0ff,#f4f9ff);
-  text-align:center;
-  margin:0;
-  padding:20px;
-}
-h1{color:#2f80ed;}
-.lesson,.question{
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  max-width:800px;
-  margin:20px auto;
-  box-shadow:0 8px 20px rgba(0,0,0,0.15);
-  text-align:left;
-  animation:fade 0.5s;
-}
-@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1}}
-button{
-  padding:10px 20px;
-  margin-top:15px;
-  border:none;
-  border-radius:6px;
-  background:#00796b;
-  color:white;
-  cursor:pointer;
-}
-button:hover{background:#004d40}
-#lives{font-size:18px;color:red;font-weight:bold}
-#xpbar{
-  width:80%;height:20px;background:#ddd;margin:10px auto;border-radius:10px;overflow:hidden;
-}
-#xpfill{
-  height:100%;width:0%;background:#56ccf2;transition:width 0.4s;
-}
-.correct{color:green;font-weight:bold}
-.wrong{color:red;font-weight:bold}
-#congrats{
-  display:none;
-  font-size:40px;
-  font-weight:bold;
-  color:#2f80ed;
-  animation:pop 1s infinite alternate;
-}
-@keyframes pop{from{transform:scale(1)}to{transform:scale(1.1)}}
+body{margin:0;font-family:Consolas,monospace;background:#0f172a;color:white}
+.topbar{display:flex;justify-content:space-between;padding:12px 24px;background:#1e293b}
+.progress{width:40%;height:12px;background:#334155;border-radius:10px;overflow:hidden}
+.progress div{height:100%;width:0%;background:limegreen;transition:.4s}
+.container{display:flex;height:calc(100vh - 60px)}
+.left{width:40%;padding:20px;background:#111827;overflow:auto}
+.left iframe{width:100%;height:220px;border-radius:10px;margin:10px 0}
+.right{width:60%;display:flex;flex-direction:column;padding:20px}
+textarea{flex:1;background:#0b1020;color:#00ffcc;font-size:16px;border:none;padding:15px;border-radius:10px}
+.choice{margin:8px 0;padding:8px;background:#1f2937;border-radius:6px;cursor:pointer}
+.output{background:#1e293b;padding:10px;border-radius:8px;margin-top:10px;min-height:60px}
+.congrats{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;font-size:48px;color:gold;flex-direction:column;display:none}
 </style>
 </head>
 
 <body>
 
-<h1>Level 1: Variables</h1>
-<div id="lives">❤️ Lives: 3</div>
-<div id="xpbar"><div id="xpfill"></div></div>
-
-<!-- Lesson -->
-<div class="lesson" id="lesson">
-<h2>What is a Variable?</h2>
-<p>A variable stores data in Java.</p>
-<pre>int age = 16;</pre>
-
-<iframe width="100%" height="315"
-src="https://www.youtube.com/embed/so1iUWaLmKA"
-allowfullscreen></iframe>
-
-<button onclick="startGame()">Start Practice</button>
+<div class="topbar">
+<div>❤️ <span id="lives"></span> | ⭐ <span id="xp">0</span> | 🪙 <span id="coins">0</span></div>
+<div class="progress"><div id="bar"></div></div>
 </div>
 
-<div id="game"></div>
+<div class="container">
+<div class="left">
+<h2>Variables in Java</h2>
+<p>Variables store data. You must declare type, name, and value.</p>
+<iframe src="https://www.youtube.com/embed/so1iUWaLmKA" allowfullscreen></iframe>
+<div id="lesson"></div>
+</div>
 
-<div id="congrats">🎉 CONGRATULATIONS! 🎉</div>
+<div class="right">
+<div id="questionArea"></div>
+<textarea id="code" placeholder="Write code here..."></textarea>
+<button onclick="submitAnswer()">Submit</button>
+<div class="output" id="output"></div>
+</div>
+</div>
 
-<a href="index.html">⬅ Back Home</a>
-
-<audio id="correctSound" src="correct.mp3"></audio>
-<audio id="wrongSound" src="wrong.mp3"></audio>
+<div class="congrats" id="congrats">
+🎉 CONGRATULATIONS 🎉
+<button onclick="location.href='index.html'">Back Home</button>
+</div>
 
 <script>
-let lives=3, xp=0, questionIndex=0, reviveMode=false, reviveIndex=0;
+let extraLives = parseInt(localStorage.getItem("extraLives") || 0);
+localStorage.setItem("extraLives",0);
+
+let lives=3+extraLives, xp=0, progress=0;
+let coins=parseInt(localStorage.getItem("coins")||0);
+
+document.getElementById("lives").innerText=lives;
+document.getElementById("coins").innerText=coins;
 
 const questions=[
- {type:"mcq",q:"Which is correct integer variable?",opts:["int age = 16;","double age = 16;","String age = 16;"],ans:"int age = 16;"},
- {type:"typing",q:"Type: int age = 16;",ans:"int age = 16;",hint:"Use int and semicolon"},
- {type:"mcq",q:"Which stores decimal numbers?",opts:["double","int","String"],ans:"double"}
+{
+type:"choice",
+lesson:"Choose the correct declaration:",
+q:"Which is valid?",
+choices:["age = 10;","int age = 10;","num age = 10;"],
+a:1
+},
+{
+type:"type",
+lesson:"Create TWO variables and print their sum.",
+q:"Create int a=5, int b=7, then print a+b.",
+check:(c)=>c.includes("int a")&&c.includes("5")&&c.includes("int b")&&c.includes("7")&&c.includes("println")&&c.includes("a+b"),
+hint:"You need two ints and print their sum."
+},
+{
+type:"type",
+lesson:"Use a String variable.",
+q:"Create String name=\"Alex\" and print: Hello Alex",
+check:(c)=>c.includes("String name")&&c.includes("Alex")&&c.includes("println")&&c.includes("Hello"),
+hint:"Use String and concatenate."
+},
+{
+type:"type",
+lesson:"Use a double and math.",
+q:"Create double price=4.5 and print price*2",
+check:(c)=>c.includes("double price")&&c.includes("4.5")&&c.includes("println")&&c.includes("price*2"),
+hint:"Use double and multiply."
+}
 ];
 
-const reviveQs=[
- {q:"Type: int score = 10;",a:"int score = 10;"},
- {q:"Which type stores text?",opts:["String","int","double"],a:"String"},
- {q:"Type: double pi = 3.14;",a:"double pi = 3.14;"},
- {q:"Which stores whole numbers?",opts:["int","double","String"],a:"int"},
- {q:"Type: String name = \"Bob\";",a:'String name = "Bob";'}
-];
+let current=0;
 
-function updateXP(){
- xp+=20;
- document.getElementById("xpfill").style.width=xp+"%";
+function loadQ(){
+let q=questions[current];
+document.getElementById("lesson").innerText=q.lesson;
+let qa=document.getElementById("questionArea");
+qa.innerHTML="<h3>"+q.q+"</h3>";
+if(q.type==="choice"){
+document.getElementById("code").style.display="none";
+q.choices.forEach((c,i)=>qa.innerHTML+=`<div class='choice' onclick='choose(${i})'>${c}</div>`);
+}else{
+document.getElementById("code").style.display="block";
+}
+updateBar();
 }
 
-function loseLife(){
- lives--;
- document.getElementById("lives").innerText="❤️ Lives: "+lives;
- document.getElementById("wrongSound").play();
- if(lives<=0){
-   reviveMode=true;
-   reviveIndex=0;
-   alert("No lives! Complete 5 revive questions!");
-   showRevive();
- }
+function choose(i){
+if(i===questions[current].a) correct();
+else wrong("Review the lesson.");
 }
 
-function correctAnswer(){
- document.getElementById("correctSound").play();
- updateXP();
- nextQuestion();
+function submitAnswer(){
+let q=questions[current];
+let code=document.getElementById("code").value;
+if(q.check(code)) correct();
+else wrong(q.hint);
 }
 
-function startGame(){
- document.getElementById("lesson").style.display="none";
- showQuestion();
+function correct(){
+xp+=20;coins+=10;progress+=25;
+localStorage.setItem("coins",coins);
+document.getElementById("xp").innerText=xp;
+document.getElementById("coins").innerText=coins;
+document.getElementById("output").innerText="✅ Correct!";
+current++;
+if(current>=questions.length){
+document.getElementById("congrats").style.display="flex";
+}else loadQ();
 }
 
-function showQuestion(){
- const g=document.getElementById("game");
- g.innerHTML="";
- if(questionIndex>=questions.length){
-   document.getElementById("congrats").style.display="block";
-   return;
- }
- const q=questions[questionIndex];
- const div=document.createElement("div");
- div.className="question";
- div.innerHTML="<p>"+q.q+"</p>";
-
- if(q.type==="mcq"){
-   q.opts.forEach(o=>{
-     const b=document.createElement("button");
-     b.innerText=o;
-     b.onclick=()=> o===q.ans?correctAnswer():loseLife();
-     div.appendChild(b);
-   });
- }else{
-   const ta=document.createElement("textarea");
-   div.appendChild(ta);
-   const b=document.createElement("button");
-   b.innerText="Submit";
-   b.onclick=()=>{
-     ta.value.trim()===q.ans?correctAnswer():(alert("Hint: "+q.hint),loseLife());
-   };
-   div.appendChild(b);
- }
- g.appendChild(div);
+function wrong(hint){
+lives--;
+document.getElementById("lives").innerText=lives;
+document.getElementById("output").innerText="❌ "+hint;
+if(lives<=0){alert("Out of lives!");location.reload();}
 }
 
-function nextQuestion(){
- questionIndex++;
- showQuestion();
+function updateBar(){
+document.getElementById("bar").style.width=progress+"%";
 }
 
-function showRevive(){
- const g=document.getElementById("game");
- g.innerHTML="";
- const r=reviveQs[reviveIndex];
- const div=document.createElement("div");
- div.className="question";
- div.innerHTML="<p>Revive Question "+(reviveIndex+1)+": "+r.q+"</p>";
-
- if(r.opts){
-   r.opts.forEach(o=>{
-     const b=document.createElement("button");
-     b.innerText=o;
-     b.onclick=()=>checkRevive(o,r.a);
-     div.appendChild(b);
-   });
- }else{
-   const ta=document.createElement("textarea");
-   div.appendChild(ta);
-   const b=document.createElement("button");
-   b.innerText="Submit";
-   b.onclick=()=>checkRevive(ta.value.trim(),r.a);
-   div.appendChild(b);
- }
- g.appendChild(div);
-}
-
-function checkRevive(ans,correct){
- if(ans===correct){
-   reviveIndex++;
-   if(reviveIndex>=reviveQs.length){
-     lives=2;
-     reviveMode=false;
-     alert("Revived! Back to game!");
-     showQuestion();
-   }else showRevive();
- }else alert("Try again!");
-}
+loadQ();
 </script>
 
 </body>
