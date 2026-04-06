@@ -15,8 +15,9 @@ body{margin:0;font-family:Consolas,monospace;background:#0f172a;color:white}
 .left iframe{width:100%;height:220px;border-radius:10px;margin:10px 0}
 .right{width:60%;display:flex;flex-direction:column;padding:20px}
 textarea{flex:1;background:#0b1020;color:#00ffcc;font-size:16px;border:none;padding:15px;border-radius:10px}
-.choice{margin:8px 0;padding:8px;background:#1f2937;border-radius:6px;cursor:pointer}
+button{padding:10px 16px;margin:6px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
 .output{background:#1e293b;padding:10px;border-radius:8px;margin-top:10px;min-height:60px}
+.choice{display:block;margin:8px 0;padding:8px;background:#1f2937;border-radius:6px;cursor:pointer}
 .congrats{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;font-size:48px;color:gold;flex-direction:column;display:none}
 </style>
 </head>
@@ -24,84 +25,87 @@ textarea{flex:1;background:#0b1020;color:#00ffcc;font-size:16px;border:none;padd
 <body>
 
 <div class="topbar">
-<div>❤️ <span id="lives"></span> | ⭐ <span id="xp">0</span> | 🪙 <span id="coins">0</span></div>
+<div>❤️ <span id="lives">3</span> | ⭐ <span id="xp">0</span> | 🪙 <span id="coins">0</span></div>
 <div class="progress"><div id="bar"></div></div>
 </div>
 
 <div class="container">
 <div class="left">
-<h2>Variables in Java</h2>
-<p>Variables store data. You must declare type, name, and value.</p>
-<iframe src="https://www.youtube.com/embed/so1iUWaLmKA" allowfullscreen></iframe>
+<h2 id="title">Variables in Java</h2>
 <div id="lesson"></div>
+<iframe src="https://www.youtube.com/embed/so1iUWaLmKA" allowfullscreen></iframe>
 </div>
 
 <div class="right">
 <div id="questionArea"></div>
 <textarea id="code" placeholder="Write code here..."></textarea>
+<div>
 <button onclick="submitAnswer()">Submit</button>
-<div class="output" id="output"></div>
+</div>
+<div class="output" id="output">Follow the lesson and answer the question.</div>
 </div>
 </div>
 
 <div class="congrats" id="congrats">
 🎉 CONGRATULATIONS 🎉
-<button onclick="location.href='index.html'">Back Home</button>
+<button onclick="location.reload()">Play Again</button>
 </div>
 
 <script>
-let extraLives = parseInt(localStorage.getItem("extraLives") || 0);
-localStorage.setItem("extraLives",0);
-
-let lives=3+extraLives, xp=0, progress=0;
-let coins=parseInt(localStorage.getItem("coins")||0);
-
-document.getElementById("lives").innerText=lives;
+let xp=0,lives=3,progress=0,coins=parseInt(localStorage.getItem("coins")||0);
 document.getElementById("coins").innerText=coins;
 
 const questions=[
 {
 type:"choice",
-lesson:"Choose the correct declaration:",
-q:"Which is valid?",
-choices:["age = 10;","int age = 10;","num age = 10;"],
+lesson:"A variable stores data. You must declare its type.",
+q:"Which is a correct variable declaration?",
+choices:["age = 16;","int age = 16;","variable age = 16;"],
 a:1
 },
 {
 type:"type",
-lesson:"Create TWO variables and print their sum.",
-q:"Create int a=5, int b=7, then print a+b.",
-check:(c)=>c.includes("int a")&&c.includes("5")&&c.includes("int b")&&c.includes("7")&&c.includes("println")&&c.includes("a+b"),
-hint:"You need two ints and print their sum."
+lesson:"Use System.out.println() to print values.",
+q:"Create int age = 16 and print it.",
+check:(code)=>code.includes("int age")&&code.includes("16")&&code.includes("println"),
+hint:"Declare int age and print it."
+},
+{
+type:"choice",
+lesson:"String stores text.",
+q:"Which stores text?",
+choices:["int","String","double"],
+a:1
 },
 {
 type:"type",
-lesson:"Use a String variable.",
-q:"Create String name=\"Alex\" and print: Hello Alex",
-check:(c)=>c.includes("String name")&&c.includes("Alex")&&c.includes("println")&&c.includes("Hello"),
-hint:"Use String and concatenate."
-},
-{
-type:"type",
-lesson:"Use a double and math.",
-q:"Create double price=4.5 and print price*2",
-check:(c)=>c.includes("double price")&&c.includes("4.5")&&c.includes("println")&&c.includes("price*2"),
-hint:"Use double and multiply."
+lesson:"double stores decimals.",
+q:"Create double price = 9.99 and print it.",
+check:(code)=>code.includes("double price")&&code.includes("9.99")&&code.includes("println"),
+hint:"Use double price."
 }
 ];
 
-let current=0;
+const reviveQs=[
+{q:"Java keyword for integer?",a:"int"},
+{q:"Command to print?",a:"System.out.println"},
+{q:"Type for text?",a:"String"},
+{q:"Decimal type?",a:"double"},
+{q:"Boolean values?",a:"true false"}
+];
+
+let current=0,reviveMode=false,reviveIndex=0;
 
 function loadQ(){
 let q=questions[current];
 document.getElementById("lesson").innerText=q.lesson;
+document.getElementById("code").style.display=q.type==="type"?"block":"none";
 let qa=document.getElementById("questionArea");
 qa.innerHTML="<h3>"+q.q+"</h3>";
 if(q.type==="choice"){
-document.getElementById("code").style.display="none";
-q.choices.forEach((c,i)=>qa.innerHTML+=`<div class='choice' onclick='choose(${i})'>${c}</div>`);
-}else{
-document.getElementById("code").style.display="block";
+q.choices.forEach((c,i)=>{
+qa.innerHTML+=`<div class='choice' onclick='choose(${i})'>${c}</div>`;
+});
 }
 updateBar();
 }
@@ -112,14 +116,25 @@ else wrong("Review the lesson.");
 }
 
 function submitAnswer(){
+if(reviveMode){
+let val=document.getElementById("code").value.trim().toLowerCase();
+if(val.includes(reviveQs[reviveIndex].a.toLowerCase())) reviveIndex++;
+else lives--;
+if(reviveIndex>=5){ reviveMode=false;lives=3;loadQ();return;}
+if(lives<=0){alert("Failed revival!");location.reload();}
+document.getElementById("output").innerText="Revive Question: "+reviveQs[reviveIndex].q;
+return;
+}
+
 let q=questions[current];
-let code=document.getElementById("code").value;
-if(q.check(code)) correct();
+if(q.type==="type"){
+if(q.check(document.getElementById("code").value)) correct();
 else wrong(q.hint);
+}
 }
 
 function correct(){
-xp+=20;coins+=10;progress+=25;
+xp+=20;coins+=5;progress+=25;
 localStorage.setItem("coins",coins);
 document.getElementById("xp").innerText=xp;
 document.getElementById("coins").innerText=coins;
@@ -134,7 +149,13 @@ function wrong(hint){
 lives--;
 document.getElementById("lives").innerText=lives;
 document.getElementById("output").innerText="❌ "+hint;
-if(lives<=0){alert("Out of lives!");location.reload();}
+if(lives<=0) startRevive();
+}
+
+function startRevive(){
+reviveMode=true;reviveIndex=0;lives=3;
+document.getElementById("code").style.display="block";
+document.getElementById("output").innerText="Revive Mode! "+reviveQs[0].q;
 }
 
 function updateBar(){
@@ -143,6 +164,5 @@ document.getElementById("bar").style.width=progress+"%";
 
 loadQ();
 </script>
-
 </body>
 </html>
