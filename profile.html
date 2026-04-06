@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+body{
+  font-family:Arial;
+  background:linear-gradient(#e3f2fd,#ffffff);
+  text-align:center;
+  padding-top:40px;
+  margin:0;
+}
+.card{
+  background:white;
+  width:320px;
+  margin:auto;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 8px 18px rgba(0,0,0,0.1);
+}
+h1{color:#0d47a1;}
+.stat{margin:8px 0;font-size:16px;}
+.badge{
+  display:inline-block;
+  margin-top:12px;
+  padding:6px 12px;
+  border-radius:999px;
+  background:#ffeb3b;
+  font-weight:bold;
+}
+.navbar{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  background:white;
+  display:flex;
+  justify-content:space-around;
+  padding:12px 0;
+  box-shadow:0 -4px 12px rgba(0,0,0,0.1);
+}
+.nav-item{
+  font-size:18px;
+  color:#0288d1;
+  font-weight:bold;
+  cursor:pointer;
+}
+.nav-item:hover{color:#01579b;}
+</style>
+</head>
+
+<body>
+
+<h1>👤 Profile</h1>
+
+<div class="card">
+  <div class="stat">🪙 Coins: <span id="coins">0</span></div>
+  <div class="stat">❤️ Lives: <span id="lives">0</span></div>
+  <div class="stat">📚 Lessons Completed: <span id="lessons">0</span></div>
+  <div class="stat">🚩 Highest Level: <span id="progress">1</span></div>
+
+  <div id="badgeArea"></div>
+</div>
+
+<div class="navbar">
+  <div class="nav-item" onclick="goHome()">🏠 Home</div>
+  <div class="nav-item" onclick="goMap()">🗺️ Map</div>
+  <div class="nav-item" onclick="goShop()">🛒 Shop</div>
+</div>
+
+<script>
+let coins = parseInt(localStorage.getItem("coins") || 0);
+let lives = parseInt(localStorage.getItem("extraLives") || 0);
+let progress = parseInt(localStorage.getItem("progress") || 1);
+let lessonsCompleted = parseInt(localStorage.getItem("lessonsCompleted") || 0);
+
+document.getElementById("coins").innerText = coins;
+document.getElementById("lives").innerText = lives;
+document.getElementById("progress").innerText = progress;
+document.getElementById("lessons").innerText = lessonsCompleted;
+
+const badgeArea = document.getElementById("badgeArea");
+if(lessonsCompleted >= 3){
+  badgeArea.innerHTML = '<div class="badge">🏅 Java Beginner Master</div>';
+}else if(lessonsCompleted >= 1){
+  badgeArea.innerHTML = '<div class="badge">🎖️ First Steps in Java</div>';
+}
+
+function goHome(){ window.location.href = "index.html"; }
+function goMap(){ window.location.href = "map.html"; }
+function goShop(){ window.location.href = "shop.html"; }
+</script>
+
+</body>
+</html>
