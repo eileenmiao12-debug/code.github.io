@@ -1,168 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
+<meta charset="UTF-8">
+<title>Lesson 1 - Variables</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Level 1 — Variables</title>
 
 <style>
-body{margin:0;font-family:Consolas,monospace;background:#0f172a;color:white}
-.topbar{display:flex;justify-content:space-between;padding:12px 24px;background:#1e293b}
-.progress{width:40%;height:12px;background:#334155;border-radius:10px;overflow:hidden}
-.progress div{height:100%;width:0%;background:limegreen;transition:.4s}
-.container{display:flex;height:calc(100vh - 60px)}
-.left{width:40%;padding:20px;background:#111827;overflow:auto}
-.left iframe{width:100%;height:220px;border-radius:10px;margin:10px 0}
-.right{width:60%;display:flex;flex-direction:column;padding:20px}
-textarea{flex:1;background:#0b1020;color:#00ffcc;font-size:16px;border:none;padding:15px;border-radius:10px}
-button{padding:10px 16px;margin:6px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
-.output{background:#1e293b;padding:10px;border-radius:8px;margin-top:10px;min-height:60px}
-.choice{display:block;margin:8px 0;padding:8px;background:#1f2937;border-radius:6px;cursor:pointer}
-.congrats{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;font-size:48px;color:gold;flex-direction:column;display:none}
+body{
+  font-family:Arial;
+  background:linear-gradient(#e3f2fd,#ffffff);
+  padding:20px;
+  margin:0;
+}
+
+h1{
+  color:#0d47a1;
+  text-align:center;
+}
+
+.info{
+  text-align:center;
+  font-size:18px;
+  margin-bottom:20px;
+  color:#01579b;
+}
+
+.card{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 6px 12px rgba(0,0,0,0.1);
+  margin-bottom:20px;
+}
+
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:10px;
+  background:#22c55e;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{ background:#16a34a; }
+
+input[type="text"]{
+  width:90%;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #bbb;
+  margin-top:10px;
+}
+
+.match-container{
+  display:flex;
+  justify-content:space-between;
+  padding:10px;
+}
+
+.left, .right{
+  width:45%;
+}
+
+.draggable{
+  padding:10px;
+  background:#bbdefb;
+  margin:6px 0;
+  border-radius:8px;
+  cursor:grab;
+}
+
+.dropzone{
+  padding:10px;
+  background:#e1f5fe;
+  margin:6px 0;
+  border-radius:8px;
+  min-height:40px;
+  border:2px dashed #90caf9;
+}
+
+.correct{
+  animation:correctFlash 0.4s ease;
+}
+@keyframes correctFlash{
+  0%{background:#c8e6c9;}
+  100%{background:white;}
+}
+
+.wrong{
+  animation:shake 0.3s ease;
+}
+@keyframes shake{
+  0%{transform:translateX(0);}
+  25%{transform:translateX(-6px);}
+  50%{transform:translateX(6px);}
+  75%{transform:translateX(-6px);}
+  100%{transform:translateX(0);}
+}
+
+.hidden{ display:none; }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-<div>❤️ <span id="lives">3</span> | ⭐ <span id="xp">0</span> | 🪙 <span id="coins">0</span></div>
-<div class="progress"><div id="bar"></div></div>
+<h1>Lesson 1: Variables</h1>
+
+<div class="info">
+  🪙 Coins: <span id="coins">0</span> &nbsp;&nbsp;
+  ❤️ Lives: <span id="lives">0</span>
 </div>
 
-<div class="container">
-<div class="left">
-<h2 id="title">Variables in Java</h2>
-<div id="lesson"></div>
-<iframe src="https://www.youtube.com/embed/so1iUWaLmKA" allowfullscreen></iframe>
+<!-- MULTIPLE CHOICE -->
+<div class="card" id="q1">
+  <h3>1. Which line correctly declares an integer variable?</h3>
+  <label><input type="radio" name="q1" value="a"> int age = "18";</label><br/>
+  <label><input type="radio" name="q1" value="b"> int age = 18;</label><br/>
+  <label><input type="radio" name="q1" value="c"> age int = 18;</label>
 </div>
 
-<div class="right">
-<div id="questionArea"></div>
-<textarea id="code" placeholder="Write code here..."></textarea>
-<div>
-<button onclick="submitAnswer()">Submit</button>
-</div>
-<div class="output" id="output">Follow the lesson and answer the question.</div>
-</div>
+<!-- FILL IN THE BLANK -->
+<div class="card" id="q2">
+  <h3>2. Fill in the blank: Declare a String variable named <b>name</b> with value "Alice".</h3>
+  <input type="text" id="fill1" placeholder='Type your answer here...'>
 </div>
 
-<div class="congrats" id="congrats">
-🎉 CONGRATULATIONS 🎉
-<button onclick="location.reload()">Play Again</button>
+<!-- MATCHING -->
+<div class="card" id="q3">
+  <h3>3. Match the variable type with an example value.</h3>
+
+  <div class="match-container">
+    <div class="left">
+      <div class="draggable" draggable="true" id="drag-int">int</div>
+      <div class="draggable" draggable="true" id="drag-string">String</div>
+    </div>
+
+    <div class="right">
+      <div class="dropzone" data-answer="int">18</div>
+      <div class="dropzone" data-answer="String">"Hello"</div>
+    </div>
+  </div>
+</div>
+
+<button onclick="submitQuiz()">Submit Answers</button>
+
+<!-- REVIVE MODE -->
+<div id="reviveSection" class="hidden">
+  <h2>💀 You ran out of lives!</h2>
+  <p>Solve 5 quick questions to revive +1 life.</p>
+  <button onclick="revive()">Start Revive Challenge</button>
 </div>
 
 <script>
-let xp=0,lives=3,progress=0,coins=parseInt(localStorage.getItem("coins")||0);
-document.getElementById("coins").innerText=coins;
+// ------------------ GLOBAL STATE ------------------
+let coins = parseInt(localStorage.getItem("coins") || 0);
+let lives = parseInt(localStorage.getItem("extraLives") || 3);
+let progress = parseInt(localStorage.getItem("progress") || 1);
+let lessonsCompleted = parseInt(localStorage.getItem("lessonsCompleted") || 0);
 
-const questions=[
-{
-type:"choice",
-lesson:"A variable stores data. You must declare its type.",
-q:"Which is a correct variable declaration?",
-choices:["age = 16;","int age = 16;","variable age = 16;"],
-a:1
-},
-{
-type:"type",
-lesson:"Use System.out.println() to print values.",
-q:"Create int age = 16 and print it.",
-check:(code)=>code.includes("int age")&&code.includes("16")&&code.includes("println"),
-hint:"Declare int age and print it."
-},
-{
-type:"choice",
-lesson:"String stores text.",
-q:"Which stores text?",
-choices:["int","String","double"],
-a:1
-},
-{
-type:"type",
-lesson:"double stores decimals.",
-q:"Create double price = 9.99 and print it.",
-check:(code)=>code.includes("double price")&&code.includes("9.99")&&code.includes("println"),
-hint:"Use double price."
-}
-];
+document.getElementById("coins").innerText = coins;
+document.getElementById("lives").innerText = lives;
 
-const reviveQs=[
-{q:"Java keyword for integer?",a:"int"},
-{q:"Command to print?",a:"System.out.println"},
-{q:"Type for text?",a:"String"},
-{q:"Decimal type?",a:"double"},
-{q:"Boolean values?",a:"true false"}
-];
+// ------------------ DRAG & DROP ------------------
+let dragged = null;
 
-let current=0,reviveMode=false,reviveIndex=0;
-
-function loadQ(){
-let q=questions[current];
-document.getElementById("lesson").innerText=q.lesson;
-document.getElementById("code").style.display=q.type==="type"?"block":"none";
-let qa=document.getElementById("questionArea");
-qa.innerHTML="<h3>"+q.q+"</h3>";
-if(q.type==="choice"){
-q.choices.forEach((c,i)=>{
-qa.innerHTML+=`<div class='choice' onclick='choose(${i})'>${c}</div>`;
+document.querySelectorAll(".draggable").forEach(el=>{
+  el.addEventListener("dragstart", ()=> dragged = el);
 });
-}
-updateBar();
+
+document.querySelectorAll(".dropzone").forEach(zone=>{
+  zone.addEventListener("dragover", e=> e.preventDefault());
+  zone.addEventListener("drop", ()=>{
+    zone.innerHTML = "";
+    zone.appendChild(dragged);
+  });
+});
+
+// ------------------ QUIZ SUBMISSION ------------------
+function submitQuiz(){
+  if(lives <= 0){
+    document.getElementById("reviveSection").classList.remove("hidden");
+    return;
+  }
+
+  let correct = 0;
+
+  // Q1
+  const q1 = document.querySelector("input[name='q1']:checked");
+  if(q1 && q1.value === "b") correct++;
+  else loseLife("q1");
+
+  // Q2
+  const fill = document.getElementById("fill1").value.trim();
+  if(fill === `String name = "Alice";`) correct++;
+  else loseLife("q2");
+
+  // Q3
+  let matchCorrect = true;
+  document.querySelectorAll(".dropzone").forEach(zone=>{
+    const child = zone.querySelector(".draggable");
+    if(!child || child.id.replace("drag-","") !== zone.dataset.answer){
+      matchCorrect = false;
+    }
+  });
+  if(matchCorrect) correct++;
+  else loseLife("q3");
+
+  if(lives <= 0){
+    document.getElementById("reviveSection").classList.remove("hidden");
+    return;
+  }
+
+  if(correct === 3){
+    coins += 10;
+    lessonsCompleted += 1;
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("lessonsCompleted", lessonsCompleted);
+    if(progress < 2) localStorage.setItem("progress", 2);
+
+    alert("Perfect! +10 coins");
+    window.location.href = "map.html";
+  }
 }
 
-function choose(i){
-if(i===questions[current].a) correct();
-else wrong("Review the lesson.");
+function loseLife(qid){
+  lives -= 1;
+  localStorage.setItem("extraLives", lives);
+  document.getElementById("lives").innerText = lives;
+  document.getElementById(qid).classList.add("wrong");
+  setTimeout(()=> document.getElementById(qid).classList.remove("wrong"), 400);
 }
 
-function submitAnswer(){
-if(reviveMode){
-let val=document.getElementById("code").value.trim().toLowerCase();
-if(val.includes(reviveQs[reviveIndex].a.toLowerCase())) reviveIndex++;
-else lives--;
-if(reviveIndex>=5){ reviveMode=false;lives=3;loadQ();return;}
-if(lives<=0){alert("Failed revival!");location.reload();}
-document.getElementById("output").innerText="Revive Question: "+reviveQs[reviveIndex].q;
-return;
+// ------------------ REVIVE MODE ------------------
+function revive(){
+  alert("Revive successful! +1 life");
+  lives = 1;
+  localStorage.setItem("extraLives", lives);
+  window.location.reload();
 }
-
-let q=questions[current];
-if(q.type==="type"){
-if(q.check(document.getElementById("code").value)) correct();
-else wrong(q.hint);
-}
-}
-
-function correct(){
-xp+=20;coins+=5;progress+=25;
-localStorage.setItem("coins",coins);
-document.getElementById("xp").innerText=xp;
-document.getElementById("coins").innerText=coins;
-document.getElementById("output").innerText="✅ Correct!";
-current++;
-if(current>=questions.length){
-document.getElementById("congrats").style.display="flex";
-}else loadQ();
-}
-
-function wrong(hint){
-lives--;
-document.getElementById("lives").innerText=lives;
-document.getElementById("output").innerText="❌ "+hint;
-if(lives<=0) startRevive();
-}
-
-function startRevive(){
-reviveMode=true;reviveIndex=0;lives=3;
-document.getElementById("code").style.display="block";
-document.getElementById("output").innerText="Revive Mode! "+reviveQs[0].q;
-}
-
-function updateBar(){
-document.getElementById("bar").style.width=progress+"%";
-}
-
-loadQ();
 </script>
+
 </body>
 </html>
