@@ -15,23 +15,109 @@
             --danger: #f44336;
             --warning: #ffeb3b;
             --coin: #ffc107;
+            /* New Landing Page Colors */
+            --land-bg-start: #1a237e; /* Deep Blue */
+            --land-bg-end: #311b92;   /* Deep Purple */
+            --land-text: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
+            padding: 0;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow: hidden; /* Prevent scrolling on landing page */
         }
 
-        /* --- Header & HUD --- */
+        /* --- 🚀 NEW: Landing Page Screen --- */
+        #screen-land {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(135deg, var(--land-bg-start), var(--land-bg-end));
+            color: var(--land-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1000; /* Sit on top of everything */
+            transition: transform 0.5s ease-out; /* Smooth slide-out effect */
+        }
+
+        #screen-land.hidden {
+            transform: translateY(-100%); /* Slide up and out */
+            pointer-events: none;
+        }
+
+        .land-logo {
+            font-size: 64px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .land-slogan {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            max-width: 80%;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 50px;
+            max-width: 800px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-icon { font-size: 3em; margin-bottom: 10px; }
+        .feature-title { font-weight: bold; font-size: 1.2em; margin-bottom: 5px; }
+        .feature-desc { font-size: 0.9em; opacity: 0.8; }
+
+        .btn-start-quest {
+            padding: 20px 60px;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            background-color: var(--primary);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-start-quest:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-start-quest:active {
+            transform: translateY(1px);
+        }
+
+
+        /* --- Header / HUD --- */
         header {
-            background: var(--card-bg);
+            background-color: var(--card-bg);
             padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -40,282 +126,660 @@
             z-index: 100;
         }
 
-        .logo { font-size: 24px; font-weight: bold; color: var(--primary); text-decoration: none; }
-        .hud { display: flex; gap: 15px; font-weight: bold; }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .hud {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .hud-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+        }
+
+        .icon { font-size: 1.2em; }
         .lives { color: var(--danger); }
         .coins { color: var(--coin); }
+        .streak { color: #ff9800; }
 
-        /* --- Layout --- */
-        main { flex: 1; padding: 20px; overflow-y: auto; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 600px; }
+        /* --- Main Content Area --- */
+        main {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* --- Screens --- */
         .screen { display: none; }
         .screen.active { display: block; }
 
-        /* --- Map Styling --- */
-        .map-path { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        /* --- Map Screen --- */
+        .map-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+        }
+
         .level-node {
-            width: 70px; height: 70px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            background: #e0e0e0; color: #999; border: 4px solid #bdbdbd;
-            cursor: not-allowed; font-weight: bold; position: relative;
+            width: 80px;
+            height: 80px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #999;
+            cursor: not-allowed;
+            border: 4px solid #bdbdbd;
+            box-shadow: 0 4px 0 #bdbdbd;
+            transition: all 0.2s;
+            position: relative;
         }
-        .level-node.unlocked { background: white; color: var(--primary); border-color: var(--primary); cursor: pointer; box-shadow: 0 4px 0 var(--primary-dark); }
-        .level-node.completed { background: var(--primary); color: white; }
-        .connector { width: 8px; height: 25px; background: #e0e0e0; }
-        .connector.active { background: #a5d6a7; }
 
-        /* --- Game Styling --- */
-        .game-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .level-node.unlocked {
+            background-color: var(--card-bg);
+            color: var(--primary);
+            cursor: pointer;
+            border-color: var(--primary);
+            box-shadow: 0 4px 0 var(--primary-dark);
+        }
+
+        .level-node.unlocked:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 var(--primary-dark);
+        }
+
+        .level-node.completed {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary-dark);
+        }
+        
+        .level-tooltip {
+            position: absolute;
+            bottom: -30px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .level-node:hover .level-tooltip {
+            opacity: 1;
+        }
+
+        .map-connector {
+            width: 10px;
+            height: 30px;
+            background-color: #e0e0e0;
+        }
+        .map-connector.unlocked {
+            background-color: #a5d6a7;
+        }
+
+        /* --- Game Screen --- */
+        .game-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        #lesson-area {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
         .code-block {
-            background: #272822; color: #f8f8f2; padding: 15px; border-radius: 8px;
-            font-family: 'Consolas', monospace; white-space: pre; margin: 15px 0; overflow-x: auto;
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            overflow-x: auto;
+            margin: 10px 0;
+            white-space: pre;
         }
-        .c-comment { color: #75715e; }
-        .c-kw { color: #f92672; }
-        .c-str { color: #e6db74; }
+        
+        /* Professional English Comments: Syntax Highlighting */
+        .code-comment { color: #75715e; } /* Javadoc & Inline Comments */
+        .code-keyword { color: #f92672; } /* keywords like 'int', 'String' */
+        .code-string { color: #e6db74; } /* String literals */
+        .code-type { color: #66d9ef; } /* Class names */
 
-        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        #question-area h3 { margin-top: 0; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
         .option-btn {
-            padding: 15px; border: 2px solid #ddd; border-radius: 10px;
-            background: #f9f9f9; cursor: pointer; font-size: 16px; transition: 0.2s;
-        }
-        .option-btn:hover:not(:disabled) { background: #eee; }
-        .option-btn.correct { background: #c8e6c9; border-color: var(--primary); color: #2e7d32; }
-        .option-btn.wrong { background: #ffcdd2; border-color: var(--danger); color: #c62828; }
-
-        .feedback-area {
-            margin-top: 20px; padding: 15px; border-radius: 10px; display: none;
-            text-align: center; font-weight: bold;
-        }
-        .btn-continue {
-            display: none; width: 100%; padding: 15px; margin-top: 15px;
-            background: var(--primary); color: white; border: none; border-radius: 10px;
-            font-size: 18px; font-weight: bold; cursor: pointer;
+            background-color: #f0f0f0;
+            border: 2px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.2s;
+            text-align: left;
         }
 
-        /* --- Footer --- */
-        footer { background: white; padding: 15px; display: flex; justify-content: space-around; border-top: 1px solid #eee; }
-        .nav-btn { background: none; border: none; color: #999; cursor: pointer; font-size: 16px; }
-        .nav-btn.active { color: var(--primary); font-weight: bold; }
+        .option-btn:hover { background-color: #e0e0e0; }
+        .option-btn.correct {
+            background-color: #c8e6c9;
+            border-color: var(--primary);
+            color: var(--primary-dark);
+        }
+        .option-btn.wrong {
+            background-color: #ffcdd2;
+            border-color: var(--danger);
+            color: #b71c1c;
+        }
+
+        #game-message {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            min-height: 1.2em;
+        }
+
+        .next-btn {
+            display: none; /* Hidden until answer is checked */
+            width: 100%;
+            padding: 15px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* --- Footer Nav --- */
+        footer {
+            background-color: var(--card-bg);
+            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #777;
+            font-size: 1em;
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        /* Utils */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">CodeQuest</div>
-    <div class="hud">
-        <div class="lives">❤️ <span id="lives-count">3</span></div>
-        <div class="coins">🪙 <span id="coins-count">100</span></div>
-    </div>
-</header>
-
-<main>
-    <div class="container">
-        <div id="screen-map" class="screen active">
-            <h2 style="text-align:center">Your Java Journey</h2>
-            <div id="map-container" class="map-path"></div>
-        </div>
-
-        <div id="screen-game" class="screen">
-            <div class="game-card">
-                <div id="lesson-part">
-                    <h2 id="lesson-title"></h2>
-                    <p id="lesson-desc"></p>
-                    <div id="lesson-code" class="code-block"></div>
-                    <button class="btn-continue" style="display:block" onclick="startQuiz()">START QUIZ</button>
-                </div>
-
-                <div id="quiz-part" style="display:none">
-                    <h3 id="question-text"></h3>
-                    <div id="question-code" class="code-block"></div>
-                    <div id="options-box" class="options-grid"></div>
-                    <div id="feedback" class="feedback-area"></div>
-                    <button id="next-btn" class="btn-continue" onclick="handleNext()">CONTINUE</button>
-                </div>
+    <div id="screen-land">
+        <div class="land-logo">CodeQuest</div>
+        <div class="land-slogan">Learn Java Programming Like a Game.</div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <div class="feature-title">Gamified Learning</div>
+                <div class="feature-desc">Earn coins, keep your streak, and unlock levels.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧩</div>
+                <div class="feature-title">Bite-Sized Lessons</div>
+                <div class="feature-desc">Quick, engaging lessons and immediate real-world practice.</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">☕</div>
+                <div class="feature-title">Master Java</div>
+                <div class="feature-desc">Build a solid foundation from variables to Objects.</div>
             </div>
         </div>
+
+        <button class="btn-start-quest" onclick="startApp()">START QUEST</button>
     </div>
-</main>
 
-<footer>
-    <button class="nav-btn active">Map</button>
-    <button class="nav-btn">Shop</button>
-    <button class="nav-btn">Profile</button>
-</footer>
+    <header>
+        <a href="#" class="logo" onclick="showScreen('map')">CodeQuest</a>
+        <div class="hud">
+            <div class="hud-item streak"><span class="icon">🔥</span> <span id="streak-val">0</span></div>
+            <div class="hud-item coins"><span class="icon">🪙</span> <span id="coins-val">100</span></div>
+            <div class="hud-item lives"><span class="icon">❤️</span> <span id="lives-val">3</span></div>
+        </div>
+    </header>
 
-<script>
-    /**
-     * GAME DATABASE
-     * Contains levels, lessons, and English-commented Java code snippets.
-     */
-    const gameData = [
-        {
-            id: 1,
-            title: "Variables & Output",
-            desc: "Learn how to store data and print it to the console.",
-            code: `<span class="c-kw">int</span> age = <span class="c-str">20</span>; <span class="c-comment">// Store a number</span>\nSystem.out.println(age);`,
-            questions: [
-                {
-                    q: "What is the correct way to print 'Hello' in Java?",
-                    code: "",
-                    options: ["print('Hello')", "System.out.println('Hello')", "Console.log('Hello')", "echo 'Hello'"],
-                    answer: 1
+    <main>
+        <div class="container">
+            
+            <div id="screen-map" class="screen active">
+                <h2 style="text-align:center;">Java Fundamentals Path</h2>
+                <div class="map-path" id="map-path">
+                    </div>
+            </div>
+
+            <div id="screen-game" class="screen">
+                <div class="game-card">
+                    <div id="lesson-area">
+                        <h2 id="lesson-title">Lesson</h2>
+                        <p id="lesson-text"></p>
+                        <div id="lesson-code" class="code-block"></div>
+                        <button class="next-btn" style="display:block;" onclick="startQuiz()">Start Quiz</button>
+                    </div>
+
+                    <div id="question-area" class="hidden">
+                        <div style="display:flex; justify-content:space-between;color:#777; font-size:0.9em">
+                            <span id="game-mode-display">Mode: Survival</span>
+                            <span id="progress-text">Question 1/5</span>
+                        </div>
+                        <h3 id="question-text"></h3>
+                        <div id="question-code" class="code-block hidden"></div>
+                        <div class="options-grid" id="options-container">
+                            </div>
+                        <div id="game-message"></div>
+                        <button id="next-q-btn" class="next-btn" onclick="nextQuestion()">Next Question</button>
+                        <button id="finish-btn" class="next-btn" onclick="finishLevel()">Finish Level</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="screen-shop" class="screen">
+                <h2>Shop</h2>
+                <div class="game-card">
+                    <p>Welcome to the shop! Spend your hard-earned coins here.</p>
+                    <button onclick="buyLife()" style="padding:10px; background:var(--coin); border:none; border-radius:4px; cursor:pointer;">Buy +1 Life ❤️ (50 Coins)</button>
+                </div>
+            </div>
+            
+            <div id="screen-profile" class="screen">
+                <h2>Profile</h2>
+                <div class="game-card">
+                    <p>Stats and Achievements coming soon!</p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <button class="nav-btn active" onclick="showScreen('map', this)">🗺️ Map</button>
+        <button class="nav-btn" onclick="showScreen('shop', this)">🛍️ Shop</button>
+        <button class="nav-btn" onclick="showScreen('profile', this)">👤 Profile</button>
+    </footer>
+
+    <script>
+        // --- DATA ---
+        
+        const levels = [
+            { id: 1, title: "Output & Variables", theme: "basics" },
+            { id: 2, title: "Operators", theme: "math" },
+            { id: 3, title: "Conditions (If/Else)", theme: "logic" },
+            { id: 4, title: "Loops", theme: "repetition" },
+            { id: 5, title: "Arrays", theme: "data" }
+        ];
+
+        // Content for the first 2 levels to demonstrate
+        const gameContent = {
+            1: {
+                lesson: {
+                    title: "Level 1: Output & Variables",
+                    text: "In Java, we use <code>System.out.println()</code> to print text to the screen. To store data, we use <b>variables</b>. A <code>String</code> stores text, and an <code>int</code> stores integers (whole numbers).",
+                    // Professional English Javadoc & Inline Comments
+                    code: `/**\n * Basic output and variable declaration in Java.\n * Defines a user and prints their name.\n */\n<span class="code-type">String</span> name = <span class="code-string">"Alice"</span>; <span class="code-comment">// Declares a String variable to store text</span>\n<span class="code-type">int</span> age = <span class="code-string">25</span>;           <span class="code-comment">// Declares an int variable for whole numbers</span>\nSystem.out.println(name); <span class="code-comment">// Output the value of 'name' to console</span>`
                 },
-                {
-                    q: "What will this code output?",
-                    code: `<span class="c-kw">int</span> x = <span class="c-str">5</span>;\nx = <span class="c-str">10</span>;\nSystem.out.println(x);`,
-                    options: ["5", "x", "10", "Error"],
-                    answer: 2
-                }
-            ]
-        },
-        {
-            id: 2,
-            title: "Operators",
-            desc: "Perform calculations using math operators.",
-            code: `<span class="c-kw">int</span> result = <span class="c-str">10</span> % <span class="c-str">3</span>; <span class="c-comment">// Remainder operator</span>`,
-            questions: [
-                {
-                    q: "What is the value of 'result'?",
-                    code: `<span class="c-kw">int</span> result = <span class="c-str">10</span> / <span class="c-str">2</span> + <span class="c-str">1</span>;`,
-                    options: ["5", "6", "4", "10"],
-                    answer: 1
-                }
-            ]
-        }
-    ];
-
-    /**
-     * APPLICATION STATE
-     */
-    let state = {
-        lives: 3,
-        coins: 100,
-        unlockedLevel: 1,
-        currentLvlIdx: 0,
-        currentQIdx: 0
-    };
-
-    /**
-     * INITIALIZE APP
-     */
-    function init() {
-        renderMap();
-        updateHUD();
-    }
-
-    function updateHUD() {
-        document.getElementById('lives-count').innerText = state.lives;
-        document.getElementById('coins-count').innerText = state.coins;
-    }
-
-    /**
-     * RENDER THE LEARNING PATH
-     */
-    function renderMap() {
-        const container = document.getElementById('map-container');
-        container.innerHTML = '';
-        gameData.forEach((lvl, i) => {
-            if (i > 0) {
-                const conn = document.createElement('div');
-                conn.className = `connector ${lvl.id <= state.unlockedLevel ? 'active' : ''}`;
-                container.appendChild(conn);
+                questions: [
+                    {
+                        type: "mcq",
+                        q: "Which keyword is used to declare a variable that stores whole numbers?",
+                        options: ["String", "int", "double", "boolean"],
+                        answer: 1 // index of "int"
+                    },
+                    {
+                        type: "code_output",
+                        q: "What is the output of this code?",
+                        code: `<span class="code-type">int</span> score = <span class="code-string">10</span>;\nscore = <span class="code-string">20</span>; <span class="code-comment">// Re-assigning a new value to the variable</span>\nSystem.out.println(score);`,
+                        options: ["10", "20", "score", "Error"],
+                        answer: 1
+                    },
+                    {
+                        type: "mcq",
+                        q: "How do you correctly print \"Hello\" to the console?",
+                        options: ["print(\"Hello\");", "Console.log(\"Hello\");", "System.out.println(\"Hello\");", "Println(\"Hello\");"],
+                        answer: 2
+                    }
+                ]
+            },
+            2: {
+                lesson: {
+                    title: "Level 2: Operators",
+                    text: "Java uses standard math operators: <code>+</code> (add), <code>-</code> (subtract), <code>*</code> (multiply), <code>/</code> (divide). The <b>modulo</b> operator <code>%</code> returns the remainder of a division.",
+                    code: `/**\n * Using arithmetic operators.\n */\n<span class="code-type">int</span> sum = <span class="code-string">5</span> + <span class="code-string">3</span>;      <span class="code-comment">// Adds two numbers</span>\n<span class="code-type">int</span> rem = <span class="code-string">10</span> % <span class="code-string">3</span>;    <span class="code-comment">// Returns 1 (Remainder of 10/3)</span>`
+                },
+                questions: [
+                    {
+                        type: "mcq",
+                        q: "What is the result of <code>15 / 3</code> in Java?",
+                        options: ["3", "5", "15", "0"],
+                        answer: 1
+                    },
+                    {
+                        type: "code_output",
+                        q: "What is the output?",
+                        code: `<span class="code-type">int</span> x = <span class="code-string">5</span>;\n<span class="code-type">int</span> y = x * <span class="code-string">2</span>; <span class="code-comment">// Multiplication</span>\nSystem.out.println(y - <span class="code-string">1</span>); <span class="code-comment">// Subtraction and output</span>`,
+                        options: ["9", "10", "4", "5"],
+                        answer: 0
+                    }
+                ]
             }
-            const node = document.createElement('div');
-            node.className = `level-node ${lvl.id < state.unlockedLevel ? 'completed' : ''} ${lvl.id === state.unlockedLevel ? 'unlocked' : ''}`;
-            node.innerText = lvl.id;
-            if (lvl.id <= state.unlockedLevel) node.onclick = () => loadLevel(i);
-            container.appendChild(node);
-        });
-    }
+        };
 
-    /**
-     * LEVEL & QUIZ LOGIC
-     */
-    function loadLevel(idx) {
-        state.currentLvlIdx = idx;
-        state.currentQIdx = 0;
-        const level = gameData[idx];
+        // --- APP STATE ---
+        let gameState = {
+            lives: 3,
+            coins: 100,
+            streak: 0,
+            unlockedLevel: 1,
+            currentLevelData: null,
+            currentQuestionIndex: 0,
+            correctCount: 0
+        };
 
-        document.getElementById('lesson-title').innerText = level.title;
-        document.getElementById('lesson-desc').innerText = level.desc;
-        document.getElementById('lesson-code').innerHTML = level.code;
+        // --- DOM ELEMENTS ---
+        const els = {
+            lives: document.getElementById('lives-val'),
+            coins: document.getElementById('coins-val'),
+            streak: document.getElementById('streak-val'),
+            mapPath: document.getElementById('map-path'),
+            screens: document.querySelectorAll('.screen'),
+            navBtns: document.querySelectorAll('.nav-btn'),
+            // Game screen els
+            lessonArea: document.getElementById('lesson-area'),
+            questionArea: document.getElementById('question-area'),
+            questionText: document.getElementById('question-text'),
+            questionCode: document.getElementById('question-code'),
+            optionsContainer: document.getElementById('options-container'),
+            gameMsg: document.getElementById('game-message'),
+            nextQBtn: document.getElementById('next-q-btn'),
+            finishBtn: document.getElementById('finish-btn'),
+            progressText: document.getElementById('progress-text')
+        };
 
-        document.getElementById('screen-map').classList.remove('active');
-        document.getElementById('screen-game').classList.add('active');
-        document.getElementById('lesson-part').style.display = 'block';
-        document.getElementById('quiz-part').style.display = 'none';
-    }
-
-    function startQuiz() {
-        document.getElementById('lesson-part').style.display = 'none';
-        document.getElementById('quiz-part').style.display = 'block';
-        showQuestion();
-    }
-
-    function showQuestion() {
-        const q = gameData[state.currentLvlIdx].questions[state.currentQIdx];
-        document.getElementById('question-text').innerText = q.q;
-        const qCode = document.getElementById('question-code');
-        if(q.code) { qCode.innerHTML = q.code; qCode.style.display='block'; }
-        else { qCode.style.display='none'; }
-
-        const box = document.getElementById('options-box');
-        box.innerHTML = '';
-        q.options.forEach((opt, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(i, btn);
-            box.appendChild(btn);
-        });
-
-        document.getElementById('feedback').style.display = 'none';
-        document.getElementById('next-btn').style.display = 'none';
-    }
-
-    function checkAnswer(choice, btn) {
-        const q = gameData[state.currentLvlIdx].questions[state.currentQIdx];
-        const buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach(b => b.disabled = true);
-
-        const feedback = document.getElementById('feedback');
-        feedback.style.display = 'block';
-
-        if (choice === q.answer) {
-            btn.classList.add('correct');
-            feedback.innerHTML = "✔ CORRECT! Nice job.";
-            feedback.style.background = "#e8f5e9";
-            state.coins += 10;
-        } else {
-            btn.classList.add('wrong');
-            buttons[q.answer].classList.add('correct');
-            feedback.innerHTML = "✘ WRONG! Review the code.";
-            feedback.style.background = "#ffebee";
-            state.lives--;
-        }
-
-        updateHUD();
-        document.getElementById('next-btn').style.display = 'block';
-        if(state.lives <= 0) { alert("Game Over!"); location.reload(); }
-    }
-
-    function handleNext() {
-        state.currentQIdx++;
-        if (state.currentQIdx < gameData[state.currentLvlIdx].questions.length) {
-            showQuestion();
-        } else {
-            if (state.unlockedLevel === gameData[state.currentLvlIdx].id) {
-                state.unlockedLevel++;
-            }
-            alert("Level Clear!");
+        // --- INITIALIZATION ---
+        // Pre-init function to load initial map data. Does NOT start the game.
+        function initApp() {
             renderMap();
-            document.getElementById('screen-game').classList.remove('active');
-            document.getElementById('screen-map').classList.add('active');
+            updateHUD();
         }
-    }
 
-    init();
-</script>
+        /**
+         * 🚀 NEW: Starts the main application.
+         * Fired when user clicks 'START QUEST' on the landing page.
+         */
+        function startApp() {
+            // Add 'hidden' class to trigger the CSS slide-up animation
+            document.getElementById('screen-land').classList.add('hidden');
+            // Remove 'hidden' from main body to allow scrolling if needed
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- UI & NAVIGATION ---
+        function updateHUD() {
+            els.lives.innerText = gameState.lives;
+            els.coins.innerText = gameState.coins;
+            els.streak.innerText = gameState.streak;
+        }
+
+        function showScreen(screenName, navBtn = null) {
+            // Hide all screens
+            els.screens.forEach(s => s.classList.remove('active'));
+            // Show target screen
+            const targetScreen = document.getElementById(`screen-${screenName}`);
+            if(targetScreen) {
+                targetScreen.classList.add('active');
+            } else {
+                console.error(`Screen 'screen-${screenName}' not found.`);
+            }
+
+            // Update Nav highlights
+            if(navBtn) {
+                els.navBtns.forEach(b => b.classList.remove('active'));
+                navBtn.classList.add('active');
+            }
+        }
+
+        // --- MAP LOGIC ---
+        function renderMap() {
+            els.mapPath.innerHTML = ''; // Clear
+            
+            levels.forEach((level, index) => {
+                // Connector (except before first)
+                if (index > 0) {
+                    const connector = document.createElement('div');
+                    connector.className = `map-connector ${level.id <= gameState.unlockedLevel ? 'unlocked' : ''}`;
+                    els.mapPath.appendChild(connector);
+                }
+
+                // Node
+                const node = document.createElement('div');
+                let classes = 'level-node';
+                if (level.id < gameState.unlockedLevel) classes += ' unlocked completed';
+                else if (level.id === gameState.unlockedLevel) classes += ' unlocked';
+                
+                node.className = classes;
+                node.innerHTML = `<span>${level.id}</span><div class="level-tooltip">${level.title}</div>`;
+
+                if (level.id <= gameState.unlockedLevel) {
+                    node.onclick = () => startLevel(level.id);
+                }
+
+                els.mapPath.appendChild(node);
+            });
+        }
+
+        // --- GAMEPLAY LOGIC ---
+
+        function startLevel(levelId) {
+            const content = gameContent[levelId];
+            if (!content) {
+                alert("Content for this level is not implemented in this prototype yet (Coming soon!). Try Level 1 or 2.");
+                return;
+            }
+
+            gameState.currentLevelData = content;
+            gameState.currentQuestionIndex = 0;
+            gameState.correctCount = 0;
+
+            // Setup Lesson
+            document.getElementById('lesson-title').innerText = content.lesson.title;
+            document.getElementById('lesson-text').innerHTML = content.lesson.text;
+            document.getElementById('lesson-code').innerHTML = content.lesson.code;
+
+            // Show lesson, hide quiz
+            els.lessonArea.classList.remove('hidden');
+            els.questionArea.classList.add('hidden');
+            showScreen('game');
+        }
+
+        function startQuiz() {
+            els.lessonArea.classList.add('hidden');
+            els.questionArea.classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const data = gameState.currentLevelData;
+            const q = data.questions[gameState.currentQuestionIndex];
+            
+            // Reset UI
+            els.gameMsg.innerText = '';
+            els.gameMsg.style.color = '';
+            els.nextQBtn.style.display = 'none'; // Ensure hidden initially
+            els.finishBtn.style.display = 'none'; // Ensure hidden initially
+            
+            // Update progress
+            els.progressText.innerText = `Question ${gameState.currentQuestionIndex + 1}/${data.questions.length}`;
+
+            // Set Question Text
+            els.questionText.innerHTML = q.q;
+
+            // Set Code block if exists
+            if (q.code) {
+                els.questionCode.innerHTML = q.code;
+                els.questionCode.classList.remove('hidden');
+            } else {
+                els.questionCode.classList.add('hidden');
+            }
+
+            // Generate Options
+            els.optionsContainer.innerHTML = '';
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                els.optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, selectedBtn) {
+            const q = gameState.currentLevelData.questions[gameState.currentQuestionIndex];
+            
+            // Disable all options
+            const buttons = els.optionsContainer.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (selectedIndex === q.answer) {
+                // Correct
+                selectedBtn.classList.add('correct');
+                els.gameMsg.innerHTML = "✔ CORRECT! Nice job.";
+                els.gameMsg.style.color = "var(--primary)";
+                gameState.coins += 10;
+                gameState.correctCount++;
+            } else {
+                // Wrong
+                selectedBtn.classList.add('wrong');
+                // Show correct one
+                buttons[q.answer].classList.add('correct');
+                
+                els.gameMsg.innerHTML = "✘ WRONG! Review the example.";
+                els.gameMsg.style.color = "var(--danger)";
+                gameState.lives--;
+                
+                if (gameState.lives <= 0) {
+                    gameOver();
+                    return;
+                }
+            }
+
+            updateHUD();
+
+            // Show Next or Finish button
+            if (gameState.currentQuestionIndex < gameState.currentLevelData.questions.length - 1) {
+                els.nextQBtn.style.display = 'block'; // Ensure block for explicit display
+                els.nextQBtn.innerText = "CONTINUE"; // Pro text
+            } else {
+                els.finishBtn.style.display = 'block'; // Ensure block for explicit display
+                els.finishBtn.innerText = "FINISH LEVEL"; // Pro text
+            }
+        }
+
+        function nextQuestion() {
+            // Reset next button state
+            els.nextQBtn.style.display = 'none';
+            gameState.currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function finishLevel() {
+            // Find current level id to unlock next
+            const currentLvlId = parseInt(document.getElementById('lesson-title').innerText.match(/\d+/)[0]);
+            
+            alert(`Level Complete! You got ${gameState.correctCount} correct.`);
+            
+            // Unlock next level logic
+            if (currentLvlId === gameState.unlockedLevel) {
+                gameState.unlockedLevel++;
+            }
+            
+            renderMap();
+            showScreen('map');
+        }
+
+        function gameOver() {
+            alert("Game Over! You lost all lives. Restarting...");
+            // Reset state
+            gameState = {
+                lives: 3,
+                coins: 100,
+                streak: 0,
+                unlockedLevel: 1,
+                currentLevelData: null,
+                currentQuestionIndex: 0,
+                correctCount: 0
+            };
+            updateHUD();
+            renderMap();
+            
+            // Reset the landing page to visible for full restart
+            document.getElementById('screen-land').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            showScreen('map');
+        }
+
+        // --- SHOP & MISC ---
+        function buyLife() {
+            if (gameState.coins >= 50) {
+                gameState.coins -= 50;
+                gameState.lives += 1;
+                updateHUD();
+                alert("Bought 1 Life!");
+            } else {
+                alert("Not enough coins!");
+            }
+        }
+
+        // --- RUN THE APP ---
+        initApp();
+
+    </script>
 </body>
 </html>
