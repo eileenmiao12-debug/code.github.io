@@ -10,38 +10,54 @@
             --bg: #f4f7f6; --text: #333; --card-bg: #fff; --danger: #f44336;
             --coin: #ffc107; --revive: #9c27b0;
         }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; }
+
+        /* --- Landing Page --- */
         #screen-land {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: linear-gradient(135deg, #1a237e, #311b92);
             color: white; display: flex; flex-direction: column;
             justify-content: center; align-items: center; z-index: 1000;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.6s ease-in-out;
         }
-        #screen-land.hidden { transform: translateY(-100%); }
-        header { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
+        #screen-land.hidden { transform: translateY(-100%); pointer-events: none; }
+
+        /* --- UI Elements --- */
+        header { background: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .hud { display: flex; gap: 15px; font-weight: bold; }
         .lives { color: var(--danger); } .coins { color: var(--coin); }
-        main { padding: 20px; display: flex; justify-content: center; }
+        
+        main { flex: 1; padding: 20px; overflow-y: auto; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 600px; }
         .screen { display: none; } .screen.active { display: block; }
-        .game-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        
+        .game-card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .code-block { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 8px; font-family: 'Consolas', monospace; white-space: pre; margin: 15px 0; font-size: 14px; }
-        .c-comment { color: #75715e; } .c-kw { color: #f92672; } .c-str { color: #e6db74; }
+        
         .btn { padding: 15px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; transition: 0.2s; }
         .btn-primary { background: var(--primary); color: white; }
         .option-btn { background: #f0f0f0; border: 2px solid #ddd; text-align: left; }
         .option-btn.correct { background: #c8e6c9; border-color: var(--primary); }
         .option-btn.wrong { background: #ffcdd2; border-color: var(--danger); }
-        .map-node { width: 60px; height: 60px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 10px auto; font-weight: bold; cursor: pointer; border: 4px solid #bbb; }
-        .map-node.active { background: white; border-color: var(--primary); color: var(--primary); }
+
+        /* --- Map & Navigation --- */
+        .map-node { width: 65px; height: 65px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; margin: 20px auto; font-weight: bold; cursor: pointer; border: 4px solid var(--primary); color: var(--primary); box-shadow: 0 4px 0 var(--primary-dark); }
+        footer { background: white; padding: 10px; display: flex; justify-content: space-around; border-top: 1px solid #eee; }
+        .nav-btn { background: none; border: none; color: #888; cursor: pointer; font-weight: bold; }
+        .nav-btn.active { color: var(--primary); }
+
+        /* --- Revival Styling --- */
+        .revive-container { border: 3px solid var(--revive); border-radius: 15px; padding: 20px; background: #faf5ff; }
+        .revive-progress { height: 10px; background: #ddd; border-radius: 5px; margin-bottom: 15px; overflow: hidden; }
+        .revive-fill { height: 100%; background: var(--revive); width: 0%; transition: 0.3s; }
     </style>
 </head>
 <body>
 
     <div id="screen-land">
         <h1>CodeQuest</h1>
-        <p>Learn Java Like a Game</p>
+        <p>Your journey to Java mastery begins here.</p>
         <button class="btn btn-primary" style="width: 200px;" onclick="startApp()">START QUEST</button>
     </div>
 
@@ -57,163 +73,177 @@
         <div class="container">
             <div id="screen-map" class="screen active">
                 <h2 style="text-align:center">Level Map</h2>
-                <div id="map-render"></div>
+                <div id="map-render">
+                    <div class="map-node" onclick="startLevel(1)">1</div>
+                </div>
             </div>
 
             <div id="screen-game" class="screen">
                 <div class="game-card">
-                    <div id="game-header">
-                        <progress id="game-progress" value="0" max="10" style="width:100%"></progress>
-                    </div>
-                    <div id="quiz-content">
+                    <div id="quiz-header">
                         <h3 id="q-text"></h3>
-                        <div id="q-code" class="code-block"></div>
-                        <div id="q-options" style="display:grid; gap:10px;"></div>
-                        <div id="q-feedback" style="margin-top:15px; font-weight:bold; text-align:center;"></div>
-                        <button id="btn-next" class="btn btn-primary" style="display:none" onclick="nextQuestion()">CONTINUE</button>
+                        <div id="q-code" class="code-block" style="display:none;"></div>
                     </div>
+                    <div id="q-options" style="display:grid; gap:10px;"></div>
+                    <button id="btn-continue" class="btn btn-primary" style="display:none;" onclick="nextQuestion()">CONTINUE</button>
                 </div>
             </div>
 
             <div id="screen-revive" class="screen">
-                <div class="game-card" style="border: 3px solid var(--revive);">
+                <div class="revive-container">
                     <h2 style="color:var(--revive); text-align:center;">REVIVAL CHALLENGE</h2>
-                    <p style="text-align:center;">Answer 5 random questions correctly to recover 1 ❤️.</p>
-                    <div id="revive-quiz">
-                        <h4 id="rev-q-text"></h4>
-                        <div id="rev-q-options" style="display:grid; gap:10px;"></div>
-                        <p id="rev-progress" style="text-align:center; font-size:14px; font-weight:bold; color:var(--revive);"></p>
-                    </div>
+                    <div class="revive-progress"><div id="revive-fill" class="revive-fill"></div></div>
+                    <p id="rev-q-text" style="font-weight:bold;"></p>
+                    <div id="rev-q-options" style="display:grid; gap:10px;"></div>
+                </div>
+            </div>
+
+            <div id="screen-shop" class="screen">
+                <h2>Shop</h2>
+                <div class="game-card">
+                    <p>Extra Life (❤️) - 50 Coins</p>
+                    <button class="btn btn-primary" onclick="buyLife()">BUY LIFE</button>
+                </div>
+            </div>
+
+            <div id="screen-profile" class="screen">
+                <h2>Profile</h2>
+                <div class="game-card">
+                    <p>Status: Java Beginner</p>
                 </div>
             </div>
         </div>
     </main>
 
+    <footer>
+        <button class="nav-btn active" onclick="nav('map', this)">MAP</button>
+        <button class="nav-btn" onclick="nav('shop', this)">SHOP</button>
+        <button class="nav-btn" onclick="nav('profile', this)">PROFILE</button>
+    </footer>
+
     <script>
+        /**
+         * INITIAL STATE
+         */
+        let state = {
+            lives: 3,
+            coins: 100,
+            curLevel: 1,
+            curQIndex: 0,
+            revScore: 0
+        };
+
         /**
          * LEVEL 1 DATABASE (10 Questions)
          */
-        const level1Data = [
-            { q: "What is the main method signature?", options: ["public void main()", "static void main(String[] args)", "void main()", "public static main()"], a: 1 },
-            { q: "Which symbol ends a Java statement?", options: [":", ".", ";", "!"], a: 2 },
-            { q: "How to declare an integer 'x' with value 5?", options: ["int x = 5", "x = 5", "integer x = 5;", "int x = 5;"], a: 3 },
-            { q: "What is the output?", code: `System.out.println(<span class="c-str">"5"</span> + <span class="c-str">"5"</span>);`, options: ["10", "55", "5", "Error"], a: 1 },
-            { q: "Which data type stores a single character?", options: ["String", "char", "boolean", "int"], a: 1 },
-            { q: "Which is a valid comment?", options: ["# comment", "// comment", "-- comment", "<- comment"], a: 1 },
-            { q: "Boolean variables can be:", options: ["Yes/No", "True/False", "1/0", "null"], a: 1 },
-            { q: "Which keyword makes a variable unchangeable?", options: ["const", "final", "static", "fixed"], a: 1 },
-            { q: "What does println mean?", options: ["Print line", "Print link", "Print list", "Print log"], a: 0 },
-            { q: "Which one is a Class name (Standard)?", options: ["myClass", "MyClass", "my_class", "MYCLASS"], a: 1 }
+        const levelData = [
+            { q: "What is the correct way to end a Java statement?", options: ["Period (.)", "Semicolon (;)", "Colon (:)", "Comma (,)"], a: 1 },
+            { q: "Which keyword is used to store whole numbers?", options: ["String", "double", "int", "boolean"], a: 2 },
+            { q: "How do you start a single-line comment in Java?", options: ["#", "//", "/*", "--"], a: 1 },
+            { q: "Which data type is best for storing the text 'Hello'?", options: ["int", "char", "String", "boolean"], a: 2 },
+            { q: "What is the entry point of every Java program?", options: ["start()", "init()", "main()", "run()"], a: 2 },
+            { q: "Is Java the same as JavaScript?", options: ["Yes", "No"], a: 1 },
+            { q: "Which symbol is used for multiplication in Java?", options: ["x", "*", "&", "^"], a: 1 },
+            { q: "Which keyword makes a variable's value unchangeable?", options: ["const", "final", "static", "fix"], a: 1 },
+            { q: "What is the output of System.out.println(2 + 2);?", options: ["22", "4", "2+2", "Error"], a: 1 },
+            { q: "Java is a case-sensitive language. Is 'Main' different from 'main'?", options: ["Yes", "No"], a: 0 }
         ];
 
         /**
-         * 🚀 EXPANDED REVIVAL DATABASE (20 Random Questions)
+         * REVIVAL POOL (20 Fundamental Java Questions)
          */
         const revivePool = [
-            { q: "1 + 1 = ?", options: ["1", "2", "3"], a: 1 },
-            { q: "Is Java the same as JavaScript?", options: ["Yes", "No"], a: 1 },
-            { q: "Keyword for integer?", options: ["integer", "int", "num"], a: 1 },
-            { q: "Keyword for text?", options: ["String", "text", "str"], a: 0 },
-            { q: "Symbol for 'Equal to'?", options: ["=", "==", "==="], a: 1 },
-            { q: "Is 'Main' the same as 'main'?", options: ["Yes", "No"], a: 1 },
-            { q: "What is 10 / 2?", options: ["2", "5", "10"], a: 1 },
-            { q: "Which is a coffee brand and a language?", options: ["Python", "Java", "C++"], a: 1 },
-            { q: "Symbol for 'Not'?", options: ["!", "?", "~"], a: 0 },
-            { q: "Start of a class block?", options: ["(", "[", "{"], a: 2 },
-            { q: "5 * 2 = ?", options: ["7", "10", "12"], a: 1 },
-            { q: "JDK stands for?", options: ["Java Dev Kit", "Java Data Key", "Just Do Know"], a: 0 },
-            { q: "Does every line end with ';'", options: ["Yes", "Mostly yes", "No"], a: 1 },
-            { q: "Is 'char' for one letter?", options: ["Yes", "No"], a: 0 },
-            { q: "10 % 3 = ?", options: ["1", "3", "0"], a: 0 },
-            { q: "Java developer's favorite drink?", options: ["Tea", "Coffee", "Water"], a: 1 },
-            { q: "Correct syntax?", options: ["int x=1", "int x=1;", "x=1"], a: 1 },
-            { q: "Is 'Double' for decimals?", options: ["Yes", "No"], a: 0 },
-            { q: "Reserved word for 'Nothing'?", options: ["empty", "null", "none"], a: 1 },
-            { q: "Opposite of true?", options: ["false", "wrong", "yes"], a: 0 }
+            { q: "Which extension is used for Java files?", options: [".js", ".java", ".class"], a: 1 },
+            { q: "What does JDK stand for?", options: ["Java Dev Kit", "Java Data Key", "Just Do Know"], a: 0 },
+            { q: "Which symbol means 'Equals To' in Java?", options: ["=", "==", "==="], a: 1 },
+            { q: "Which type stores true or false?", options: ["int", "boolean", "String"], a: 1 },
+            { q: "Is 'String' capitalized in Java?", options: ["Yes", "No"], a: 0 },
+            { q: "Symbol for division?", options: ["\\", "/", "%"], a: 1 },
+            { q: "Every class in Java starts with which keyword?", options: ["class", "object", "new"], a: 0 },
+            { q: "Which symbol is used for remainder (Modulo)?", options: ["&", "#", "%"], a: 2 },
+            { q: "JVM stands for Java Virtual...?", options: ["Main", "Machine", "Memory"], a: 1 },
+            { q: "Symbol to start a code block?", options: ["{", "[", "("], a: 0 },
+            { q: "Symbol to end a code block?", options: ["}", "]", ")"], a: 0 },
+            { q: "Keyword for decimal numbers?", options: ["int", "double", "char"], a: 1 },
+            { q: "Value of 10 % 3?", options: ["3", "1", "0"], a: 1 },
+            { q: "Correct way to declare int x?", options: ["x = 5;", "int x = 5;", "int x : 5;"], a: 1 },
+            { q: "Does Java run on many platforms?", options: ["Yes", "No"], a: 0 },
+            { q: "Can a variable start with a number?", options: ["Yes", "No"], a: 1 },
+            { q: "Shortcut to add 1 to x?", options: ["x++", "x+1", "x plus 1"], a: 0 },
+            { q: "Boolean value for 'No'?", options: ["false", "wrong", "null"], a: 0 },
+            { q: "Opposite of 'static'?", options: ["instance", "final", "void"], a: 0 },
+            { q: "Which one is a Keyword?", options: ["int", "Number", "Variable"], a: 0 }
         ];
 
-        let state = {
-            lives: 3, coins: 100,
-            curLvl: 0, curQ: 0,
-            revScore: 0, currentRevQuestions: []
-        };
-
+        // --- NAVIGATION ---
         function startApp() { document.getElementById('screen-land').classList.add('hidden'); }
+        function nav(id, btn) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
         function updateHUD() {
             document.getElementById('lives-val').innerText = state.lives;
             document.getElementById('coins-val').innerText = state.coins;
         }
 
-        /**
-         * GAME LOGIC
-         */
-        function startLevel() {
-            state.curQ = 0;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-game').classList.add('active');
+        // --- MAIN GAME ---
+        function startLevel(num) {
+            state.curQIndex = 0;
+            nav('game', document.querySelector('.nav-btn'));
             loadQuestion();
         }
 
         function loadQuestion() {
-            const data = level1Data[state.curQ];
-            document.getElementById('game-progress').value = state.curQ;
+            const data = levelData[state.curQIndex];
             document.getElementById('q-text').innerText = data.q;
-            const codeEl = document.getElementById('q-code');
-            if(data.code) { codeEl.innerHTML = data.code; codeEl.style.display = 'block'; }
-            else { codeEl.style.display = 'none'; }
-
-            const optBox = document.getElementById('q-options');
-            optBox.innerHTML = '';
+            document.getElementById('btn-continue').style.display = 'none';
+            const box = document.getElementById('q-options');
+            box.innerHTML = '';
             data.options.forEach((opt, i) => {
                 const b = document.createElement('button');
                 b.className = 'btn option-btn';
                 b.innerText = opt;
                 b.onclick = () => checkAnswer(i, b);
-                optBox.appendChild(b);
+                box.appendChild(b);
             });
-            document.getElementById('q-feedback').innerText = '';
-            document.getElementById('btn-next').style.display = 'none';
         }
 
         function checkAnswer(idx, btn) {
-            const correct = level1Data[state.curQ].a;
+            const correct = levelData[state.curQIndex].a;
             document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
             if(idx === correct) {
                 btn.classList.add('correct');
                 state.coins += 10;
-                document.getElementById('q-feedback').innerText = "✨ Correct!";
             } else {
                 btn.classList.add('wrong');
                 state.lives--;
-                document.getElementById('q-feedback').innerText = "❌ Wrong Answer";
             }
             updateHUD();
             if(state.lives <= 0) setTimeout(startRevival, 1000);
-            else document.getElementById('btn-next').style.display = 'block';
+            else document.getElementById('btn-continue').style.display = 'block';
         }
 
         function nextQuestion() {
-            state.curQ++;
-            if(state.curQ < level1Data.length) loadQuestion();
-            else { alert("Level Complete!"); location.reload(); }
+            state.curQIndex++;
+            if(state.curQIndex < 10) loadQuestion();
+            else { alert("Level Complete!"); nav('map', document.querySelector('.nav-btn')); }
         }
 
-        /**
-         * 🎲 REVIVAL LOGIC (Randomized)
-         */
+        // --- 🚀 REVIVAL LOGIC ---
         function startRevival() {
             state.revScore = 0;
-            // Shuffle and pick 5 unique questions from the 20-item pool
-            state.currentRevQuestions = revivePool.sort(() => 0.5 - Math.random()).slice(0, 5);
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-revive').classList.add('active');
+            nav('revive', document.querySelector('.nav-btn'));
             loadReviveQuestion();
         }
 
         function loadReviveQuestion() {
-            const q = state.currentRevQuestions[state.revScore];
+            // Pick a random question from the 20-item pool
+            const q = revivePool[Math.floor(Math.random() * revivePool.length)];
+            document.getElementById('revive-fill').style.width = (state.revScore * 20) + "%";
             document.getElementById('rev-q-text').innerText = q.q;
-            document.getElementById('rev-progress').innerText = `Progress: ${state.revScore} / 5`;
             const box = document.getElementById('rev-q-options');
             box.innerHTML = '';
             q.options.forEach((opt, i) => {
@@ -226,26 +256,26 @@
                         if(state.revScore >= 5) {
                             state.lives = 1;
                             updateHUD();
-                            alert("REVIVED! One life restored.");
-                            location.reload(); // Go back to map
+                            alert("REVIVED! One Heart Restored.");
+                            nav('map', document.querySelector('.nav-btn'));
                         } else {
                             loadReviveQuestion();
                         }
                     } else {
-                        alert("FAILED! Let's try a different set of questions.");
-                        startRevival(); // Re-shuffle and restart revival
+                        alert("Resetting Challenge! Java requires precision.");
+                        state.revScore = 0;
+                        loadReviveQuestion();
                     }
                 };
                 box.appendChild(b);
             });
         }
 
-        // Initialize Map
-        const node = document.createElement('div');
-        node.className = 'map-node active';
-        node.innerText = "1";
-        node.onclick = startLevel;
-        document.getElementById('map-render').appendChild(node);
+        function buyLife() {
+            if(state.coins >= 50) { state.coins -= 50; state.lives++; updateHUD(); }
+            else alert("Not enough coins!");
+        }
+
         updateHUD();
     </script>
 </body>
