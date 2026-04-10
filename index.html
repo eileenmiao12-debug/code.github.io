@@ -3,300 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CodeQuest — Master Java Step-by-Step</title>
+    <title>Java CodeQuest | Pixel Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #4caf50; --primary-dark: #388e3c; --secondary: #2196f3;
-            --bg: #f4f7f6; --text: #333; --card-bg: #fff; --danger: #f44336;
-            --coin: #ffc107; --revive: #9c27b0;
-        }
-
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: var(--bg); color: var(--text); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
-        /* --- Screens --- */
-        .screen { display: none; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; }
-        .screen.active { display: flex; flex-direction: column; align-items: center; }
-
-        /* --- Landing Page --- */
-        #screen-land {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, #1a237e, #311b92);
-            color: white; justify-content: center; z-index: 1000;
-            transition: transform 0.6s ease-in-out;
-        }
-        #screen-land.hidden { transform: translateY(-100%); }
-
-        /* --- Map Nodes --- */
-        .map-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; gap: 20px; padding-bottom: 100px; }
-        .level-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        .map-node { 
-            width: 80px; height: 80px; border-radius: 50%; background: white; 
-            display: flex; align-items: center; justify-content: center; 
-            font-weight: bold; cursor: pointer; border: 4px solid var(--primary); 
-            color: var(--primary); box-shadow: 0 4px 0 var(--primary-dark);
-            font-size: 24px; position: relative; z-index: 2;
-        }
-        .level-info { margin-top: 10px; font-weight: bold; color: #555; text-align: center; }
-        .map-line { width: 6px; height: 40px; background: #ddd; margin: -5px 0; z-index: 1; }
-
-        /* --- Lesson & Game Card --- */
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        .code-block { background: #272822; color: #f8f8f2; padding: 15px; border-radius: 8px; font-family: 'Consolas', monospace; white-space: pre-wrap; margin: 15px 0; font-size: 14px; border-left: 5px solid var(--secondary); }
+        /* Global Styles */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f3f4f6; }
         
-        .btn { padding: 15px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: white; }
-        .option-btn { background: #f0f0f0; border: 2px solid #ddd; text-align: left; padding: 12px; margin-bottom: 8px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 15px; }
-        .option-btn.correct { background: #c8e6c9; border-color: var(--primary); color: #1b5e20; }
-        .option-btn.wrong { background: #ffcdd2; border-color: var(--danger); color: #b71c1c; }
+        /* Pixel Art Accents */
+        .pixel-font { font-family: 'Press Start 2P', cursive; }
+        
+        /* Custom Sidebar Styling */
+        .sidebar-border { border-right: 2px solid #e5e7eb; }
+        .nav-item:hover { background-color: #f0f7ff; color: #3b82f6; }
+        .nav-active { background-color: #f0f7ff; color: #3b82f6; border-right: 4px solid #3b82f6; }
 
-        /* --- Header/Footer --- */
-        header { background: white; padding: 10px 20px; display: flex; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        footer { background: white; padding: 10px; display: flex; justify-content: space-around; border-top: 1px solid #eee; }
-        .nav-btn { background: none; border: none; color: #888; font-weight: bold; cursor: pointer; }
-        .nav-btn.active { color: var(--primary); }
+        /* Quest Card Hover Effects */
+        .quest-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .quest-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.05); }
+
+        /* Scrollbar customization for a cleaner look */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
     </style>
 </head>
-<body>
+<body class="flex h-screen overflow-hidden">
 
-    <div id="screen-land" class="screen active">
-        <h1>CodeQuest</h1>
-        <p>Master Java. One Step at a Time.</p>
-        <button class="btn btn-primary" style="width: 200px;" onclick="startApp()">START QUEST</button>
-    </div>
-
-    <header>
-        <div style="font-weight:bold; color:var(--primary)">CodeQuest</div>
-        <div style="display:flex; gap:15px;">
-            <span style="color:var(--danger)">❤️ <span id="lives-val">3</span></span>
-            <span style="color:var(--coin)">🪙 <span id="coins-val">100</span></span>
+    <aside class="w-64 bg-white sidebar-border flex flex-col hidden md:flex">
+        <div class="p-6">
+            <h1 class="text-xl font-bold flex items-center text-indigo-600 tracking-tight">
+                <span class="mr-2">☕</span> JavaQuest
+            </h1>
         </div>
-    </header>
-
-    <main style="flex:1; overflow-y:auto;">
-        <div id="screen-map" class="screen">
-            <div class="map-container" id="map-render"></div>
-        </div>
-
-        <div id="screen-lesson" class="screen">
-            <div class="card">
-                <h2 id="lesson-title"></h2>
-                <p id="lesson-text"></p>
-                <div id="lesson-code" class="code-block"></div>
-                <button class="btn btn-primary" onclick="startQuiz()">I UNDERSTAND, START QUIZ</button>
-            </div>
-        </div>
-
-        <div id="screen-game" class="screen">
-            <div class="card">
-                <div id="q-header" style="margin-bottom:15px; font-weight:bold; color:var(--secondary);"></div>
-                <div id="q-content">
-                    <p id="q-text" style="font-size: 18px;"></p>
-                    <div id="q-code" class="code-block" style="display:none;"></div>
-                    <div id="q-options"></div>
-                </div>
-                <div id="q-explanation" style="margin-top:15px; display:none; padding:10px; background:#e3f2fd; border-radius:8px; font-size:14px;"></div>
-                <button id="btn-next" class="btn btn-primary" style="display:none;" onclick="handleNext()">CONTINUE</button>
-            </div>
-        </div>
-
-        <div id="screen-revive" class="screen">
-            <div class="card" style="border: 3px solid var(--revive);">
-                <h2 style="color:var(--revive); text-align:center;">REVIVAL CHALLENGE</h2>
-                <p>Answer 5 Java basics to earn 1 ❤️.</p>
-                <div id="rev-progress" style="font-weight:bold; color:var(--revive); margin-bottom:10px;">Progress: 0/5</div>
-                <div id="rev-q-text" style="margin-bottom:15px;"></div>
-                <div id="rev-options"></div>
-            </div>
-        </div>
-
-        <div id="screen-shop" class="screen"><h2>Shop</h2><button onclick="buyLife()">Buy Life (50 Coins)</button></div>
-        <div id="screen-profile" class="screen"><h2>Profile</h2><p>Beginner Coder</p></div>
-    </main>
-
-    <footer>
-        <button class="nav-btn active" onclick="nav('map', this)">MAP</button>
-        <button class="nav-btn" onclick="nav('shop', this)">SHOP</button>
-        <button class="nav-btn" onclick="nav('profile', this)">PROFILE</button>
-    </footer>
-
-    <script>
-        /**
-         * COURSE CONTENT
-         */
-        const levels = [
-            {
-                id: 1,
-                title: "Variables & Output",
-                lesson: {
-                    intro: "Java uses 'variables' to store data. Think of a variable as a box with a name.",
-                    text: "1. <b>int</b>: for whole numbers (like 10).\n2. <b>String</b>: for text (like \"Hello\").\n3. <b>System.out.println</b>: prints things to the screen.",
-                    code: "// Example:\nint score = 100;\nString name = \"Java\";\nSystem.out.println(name);"
-                },
-                questions: [
-                    { type: "mcq", q: "Which type is used for whole numbers?", options: ["String", "int", "boolean", "double"], a: 1 },
-                    { type: "boolean", q: "Java statements must end with a semicolon (;)", options: ["True", "False"], a: 0 },
-                    { type: "mcq", q: "What is the output?", code: "System.out.println(\"Hi\" + \"!\");", options: ["Hi!", "Hi + !", "Error", "Hi"], a: 0 },
-                    { type: "mcq", q: "How to declare a variable 'x' as 5?", options: ["int x = 5;", "x = 5;", "var 5 = x;", "int x : 5;"], a: 0 }
-                ]
-            },
-            {
-                id: 2,
-                title: "Basic Math",
-                lesson: {
-                    intro: "Java can do math just like a calculator.",
-                    text: "Use <b>+</b>, <b>-</b>, <b>*</b>, <b>/</b> for basic math.\nThe <b>% (Modulo)</b> gives you the remainder of a division.",
-                    code: "int result = 10 % 3; // result is 1 (remainder)"
-                },
-                questions: [
-                    { type: "mcq", q: "What is 10 / 2 in Java?", options: ["2", "5", "10", "1"], a: 1 },
-                    { type: "mcq", q: "What is the value of 'x'?", code: "int x = 5 * 2;", options: ["7", "10", "52", "0"], a: 1 }
-                ]
-            }
-        ];
-
-        const revivePool = [
-            { q: "Is Java same as JavaScript?", options: ["Yes", "No"], a: 1 },
-            { q: "Symbol for 'Equal to'?", options: ["=", "==", "==="], a: 1 },
-            { q: "Keyword for text?", options: ["String", "int", "char"], a: 0 },
-            { q: "Which symbol ends a statement?", options: [":", ";", "."], a: 1 }
-        ];
-
-        let state = { lives: 3, coins: 100, currentLevel: null, curQ: 0, revScore: 0 };
-
-        /**
-         * CORE LOGIC
-         */
-        function startApp() { document.getElementById('screen-land').classList.remove('active'); document.getElementById('screen-land').classList.add('hidden'); nav('map', document.querySelector('.nav-btn')); }
         
-        function nav(id, btn) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('screen-' + id).classList.add('active');
-            if(btn) {
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-            }
-            if(id === 'map') renderMap();
-        }
+        <nav class="flex-grow px-4 space-y-1">
+            <a href="#" class="nav-item flex items-center px-4 py-3 rounded-xl text-gray-600">
+                <span class="mr-3 text-lg">🏠</span> Home
+            </a>
+            <a href="#" class="nav-item flex items-center px-4 py-3 rounded-xl text-gray-600">
+                <span class="mr-3 text-lg">🏆</span> Leaderboard
+            </a>
+            <a href="#" class="nav-active flex items-center px-4 py-3 rounded-xl font-bold text-blue-600">
+                <span class="mr-3 text-lg">⚔️</span> Quest Map
+            </a>
+            <a href="#" class="nav-item flex items-center px-4 py-3 rounded-xl text-gray-600">
+                <span class="mr-3 text-lg">📅</span> Challenges
+            </a>
 
-        function renderMap() {
-            const container = document.getElementById('map-render');
-            container.innerHTML = '';
-            levels.forEach((lvl, index) => {
-                const wrapper = document.createElement('div');
-                wrapper.className = 'level-wrapper';
-                wrapper.innerHTML = `
-                    <div class="map-node" onclick="showLesson(${lvl.id})">${lvl.id}</div>
-                    <div class="level-info">${lvl.title}</div>
-                `;
-                container.appendChild(wrapper);
-                if(index < levels.length - 1) {
-                    const line = document.createElement('div');
-                    line.className = 'map-line';
-                    container.appendChild(line);
-                }
-            });
-        }
+            <div class="pt-8 pb-2 text-xs font-bold text-gray-400 uppercase tracking-widest px-4">Learning Path</div>
+            <a href="#" class="nav-item flex items-center px-4 py-2 rounded-lg text-gray-500 text-sm"># Variables_101</a>
+            <a href="#" class="nav-item flex items-center px-4 py-2 rounded-lg text-gray-500 text-sm"># OOP_Mastery</a>
+            <a href="#" class="nav-item flex items-center px-4 py-2 rounded-lg text-gray-500 text-sm"># Spring_Boot</a>
+        </nav>
 
-        function showLesson(id) {
-            state.currentLevel = levels.find(l => l.id === id);
-            state.curQ = 0;
-            nav('lesson');
-            document.getElementById('lesson-title').innerText = state.currentLevel.title;
-            document.getElementById('lesson-text').innerHTML = state.currentLevel.lesson.text;
-            document.getElementById('lesson-code').innerText = state.currentLevel.lesson.code;
-        }
+        <div class="p-4 border-t border-gray-100 flex items-center space-x-3">
+            <div class="w-10 h-10 bg-orange-400 rounded-xl flex items-center justify-center shadow-sm">🦊</div>
+            <div class="overflow-hidden">
+                <p class="text-sm font-bold truncate">Novice_Coder</p>
+                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">LVL 1 • 450 / 1000 XP</p>
+            </div>
+        </div>
+    </aside>
 
-        function startQuiz() {
-            nav('game');
-            loadQuestion();
-        }
+    <main class="flex-grow overflow-y-auto bg-[#fcfdfe]">
+        
+        <header class="bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100 p-6 flex justify-between items-center">
+            <h2 class="text-sm font-bold text-gray-400 italic">"Write once, run everywhere..."</h2>
+            <div class="flex space-x-8">
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-400 font-black uppercase">Eggs Collected</p>
+                    <p class="text-md font-bold">🥚 02</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-gray-400 font-black uppercase">Daily Streak</p>
+                    <p class="text-md font-bold text-orange-500">🔥 05 Days</p>
+                </div>
+            </div>
+        </header>
 
-        function loadQuestion() {
-            const q = state.currentLevel.questions[state.curQ];
-            document.getElementById('q-header').innerText = `Question ${state.curQ + 1} / ${state.currentLevel.questions.length}`;
-            document.getElementById('q-text').innerText = q.q;
-            document.getElementById('q-explanation').style.display = 'none';
-            document.getElementById('btn-next').style.display = 'none';
+        <div class="p-8 max-w-6xl mx-auto">
             
-            const qCode = document.getElementById('q-code');
-            if(q.code) { qCode.innerText = q.code; qCode.style.display = 'block'; } 
-            else { qCode.style.display = 'none'; }
+            <section class="mb-16">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h3 class="text-2xl font-black text-gray-800">Chapter 1: The Awakening</h3>
+                        <p class="text-gray-500">Master the fundamental syntax of Java.</p>
+                    </div>
+                    <button class="text-sm font-bold text-blue-600 hover:underline">View All Levels →</button>
+                </div>
 
-            const optBox = document.getElementById('q-options');
-            optBox.innerHTML = '';
-            q.options.forEach((opt, i) => {
-                const b = document.createElement('button');
-                b.className = 'option-btn';
-                b.innerText = opt;
-                b.onclick = () => checkAnswer(i, b);
-                optBox.appendChild(b);
-            });
-        }
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div class="quest-card bg-white p-3 rounded-3xl border-2 border-gray-100 shadow-sm cursor-pointer">
+                        <div class="bg-gradient-to-br from-cyan-400 to-blue-500 h-44 rounded-2xl flex items-center justify-center mb-4 relative overflow-hidden">
+                            <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=java-coffee" class="w-24 h-24 z-10">
+                            <div class="absolute inset-0 bg-white/10 opacity-20 pattern-dots"></div>
+                        </div>
+                        <div class="px-3 pb-4">
+                            <span class="text-[10px] font-black bg-blue-100 text-blue-600 px-2 py-1 rounded-md uppercase">Current Quest</span>
+                            <h4 class="text-lg font-bold mt-2 mb-1">1.1 Hello JVM</h4>
+                            <p class="text-sm text-gray-500 mb-6">Wake up the Java Virtual Machine for the first time.</p>
+                            <button class="w-full py-3 bg-gray-900 text-white rounded-xl font-bold text-sm hover:bg-black transition">RESUME ADVENTURE</button>
+                        </div>
+                    </div>
 
-        function checkAnswer(idx, btn) {
-            const q = state.currentLevel.questions[state.curQ];
-            const buttons = document.querySelectorAll('.option-btn');
-            buttons.forEach(b => b.disabled = true);
+                    <div class="quest-card bg-white p-3 rounded-3xl border-2 border-gray-50 opacity-60 grayscale relative">
+                        <div class="bg-gray-200 h-44 rounded-2xl flex items-center justify-center mb-4">
+                            <span class="text-4xl text-gray-400">🔒</span>
+                        </div>
+                        <div class="px-3 pb-4">
+                            <span class="text-[10px] font-black bg-gray-100 text-gray-400 px-2 py-1 rounded-md uppercase">Locked</span>
+                            <h4 class="text-lg font-bold mt-2 mb-1 text-gray-400">1.2 Memory Alchemy</h4>
+                            <p class="text-sm text-gray-400 mb-6">Learn how variables store magical data in memory pools.</p>
+                        </div>
+                    </div>
 
-            if(idx === q.a) {
-                btn.classList.add('correct');
-                state.coins += 10;
-            } else {
-                btn.classList.add('wrong');
-                buttons[q.a].classList.add('correct'); // Show correct answer
-                state.lives--;
-                document.getElementById('q-explanation').innerText = `Correct answer: ${q.options[q.a]}`;
-                document.getElementById('q-explanation').style.display = 'block';
-            }
-            updateHUD();
-            if(state.lives <= 0) setTimeout(triggerRevival, 1000);
-            else document.getElementById('btn-next').style.display = 'block';
-        }
+                </div>
+            </section>
 
-        function handleNext() {
-            state.curQ++;
-            if(state.curQ < state.currentLevel.questions.length) loadQuestion();
-            else { alert("Level Passed!"); nav('map'); }
-        }
+            <section class="bg-[#1a1c2e] rounded-[2.5rem] p-12 text-white flex flex-col md:flex-row items-center justify-between relative overflow-hidden">
+                <div class="relative z-10 md:w-2/3 text-center md:text-left">
+                    <h3 class="text-3xl font-black mb-4">#30NitesOfJava</h3>
+                    <p class="text-indigo-200 mb-8 text-lg">Build a habit, grow your skills, and hatch a legendary pixel pet that evolves with your code.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button class="bg-white text-indigo-900 px-8 py-4 rounded-2xl font-black hover:bg-indigo-50 transition shadow-lg">START CHALLENGE</button>
+                        <button class="border-2 border-white/20 px-8 py-4 rounded-2xl font-bold hover:bg-white/10 transition">VIEW REWARDS</button>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/3 mt-12 md:mt-0 flex justify-center relative">
+                    <div class="w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl absolute"></div>
+                    <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=dragon" class="w-40 h-40 animate-bounce z-10" style="animation-duration: 3s;">
+                </div>
+            </section>
 
-        /**
-         * REVIVAL
-         */
-        function triggerRevival() {
-            state.revScore = 0;
-            nav('revive');
-            loadRevive();
-        }
-
-        function loadRevive() {
-            const q = revivePool[Math.floor(Math.random() * revivePool.length)];
-            document.getElementById('rev-progress').innerText = `Progress: ${state.revScore}/5`;
-            document.getElementById('rev-q-text').innerText = q.q;
-            const box = document.getElementById('rev-options');
-            box.innerHTML = '';
-            q.options.forEach((opt, i) => {
-                const b = document.createElement('button');
-                b.className = 'option-btn';
-                b.innerText = opt;
-                b.onclick = () => {
-                    if(i === q.a) {
-                        state.revScore++;
-                        if(state.revScore >= 5) { state.lives = 1; updateHUD(); nav('map'); }
-                        else loadRevive();
-                    } else { alert("Failed! Restarting revival..."); state.revScore = 0; loadRevive(); }
-                };
-                box.appendChild(b);
-            });
-        }
-
-        function updateHUD() {
-            document.getElementById('lives-val').innerText = state.lives;
-            document.getElementById('coins-val').innerText = state.coins;
-        }
-
-        function buyLife() { if(state.coins >= 50) { state.coins -= 50; state.lives++; updateHUD(); alert("Life purchased!"); } }
-
-        updateHUD();
-    </script>
+        </div>
+    </main>
 </body>
 </html>
