@@ -3,179 +3,321 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JavaQuest | The Master Edition</title>
+    <title>JavaQuest | Professional Edition</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs/loader.min.js"></script>
+    
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f3f4f6; }
-        .nav-active { background-color: #f0f7ff; color: #3b82f6; border-right: 4px solid #3b82f6; font-weight: 800; }
-        
-        /* 关卡之间的连线效果 (Path Line) */
-        .quest-path { position: relative; }
-        .quest-path::before {
-            content: "";
-            position: absolute;
-            top: 50%; left: -2rem; width: 2rem;
-            border-top: 4px dashed #d1d5db;
-            z-index: 0;
-        }
+        :root { --accent: #6366f1; --bg-main: #f8fafc; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-main); }
+        .mono { font-family: 'JetBrains Mono', monospace; }
 
-        /* 极客感十足的编辑器容器 */
-        #monaco-container { width: 100%; height: 100%; border-radius: 0 0 1.5rem 0; overflow: hidden; }
+        /* Quest Node Animations */
+        .quest-node { transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .quest-node:hover:not(.locked) { transform: scale(1.03) translateY(-12px); border-color: var(--accent); }
         
-        /* 进化大弹窗动画 */
-        @keyframes celebrate {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        /* Floating XP Bubbles */
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
         }
-        .achievement-unlock { animation: celebrate 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .xp-pop { position: fixed; pointer-events: none; animation: floatUp 1.5s forwards; font-weight: 800; color: #10b981; }
+
+        /* SVG Connection Lines */
+        .map-container { position: relative; min-height: 100vh; }
+        .path-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        
+        /* Custom Editor Polish */
+        #monaco-container { border-radius: 0 0 2rem 0; overflow: hidden; }
+        .terminal-scroll::-webkit-scrollbar { width: 4px; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden text-gray-900">
+<body class="flex h-screen overflow-hidden">
 
-    <aside class="w-64 bg-white border-r border-gray-100 flex flex-col hidden md:flex z-20">
-        <div class="p-8"><h1 class="text-xl font-extrabold text-indigo-600 tracking-tighter">☕ JavaQuest</h1></div>
-        <nav class="flex-grow px-4 space-y-1">
-            <a href="index.html" class="nav-active flex items-center px-4 py-3 rounded-xl">🏠 Home</a>
-            <a href="leaderboard.html" class="nav-item flex items-center px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50">🏆 Leaderboard</a>
-            <a href="challenges.html" class="nav-item flex items-center px-4 py-3 rounded-xl text-gray-500 hover:bg-gray-50">📅 Challenges</a>
-        </nav>
-        <div class="p-6 border-t bg-gray-50/50">
-            <div class="flex items-center space-x-3 mb-3">
-                <div id="user-avatar" class="w-12 h-12 bg-orange-400 rounded-2xl flex items-center justify-center text-2xl shadow-inner transition-all duration-700">🥚</div>
-                <div>
-                    <p class="font-bold text-sm">Novice_Coder</p>
-                    <p class="text-[10px] font-black text-blue-600 uppercase tracking-tighter">LVL <span id="user-lvl">1</span> Apprentice</p>
+    <aside class="w-80 bg-white border-r border-slate-200 flex flex-col hidden xl:flex z-30 shadow-[10px_0_30px_rgba(0,0,0,0.02)]">
+        <div class="p-10 flex items-center space-x-4">
+            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100 font-bold text-2xl">J</div>
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tight text-slate-900">JavaQuest</h1>
+                <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Mastery Platform</p>
+            </div>
+        </div>
+        
+        <nav class="flex-grow px-8 space-y-3">
+            <div class="space-y-1">
+                <a href="#" class="flex items-center px-5 py-4 bg-indigo-50 text-indigo-600 rounded-2xl font-bold transition-all group">
+                    <span class="mr-4 transition-transform group-hover:scale-125">🏠</span> Current Path
+                </a>
+                <a href="leaderboard.html" class="flex items-center px-5 py-4 text-slate-400 rounded-2xl font-semibold hover:bg-slate-50 transition-all">
+                    <span class="mr-4">🏆</span> Rankings
+                </a>
+                <a href="challenges.html" class="flex items-center px-5 py-4 text-slate-400 rounded-2xl font-semibold hover:bg-slate-50 transition-all">
+                    <span class="mr-4">📅</span> Events
+                </a>
+            </div>
+            
+            <div class="mt-12">
+                <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mb-4">Inventory</p>
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl border border-dashed border-slate-300 flex items-center justify-center grayscale opacity-50">☕</div>
+                    <div class="w-12 h-12 bg-slate-100 rounded-xl border border-dashed border-slate-300"></div>
                 </div>
             </div>
-            <div class="w-full bg-gray-200 h-1.5 rounded-full overflow-hidden">
-                <div id="xp-bar" class="bg-blue-500 h-full transition-all duration-700" style="width: 45%"></div>
+        </nav>
+
+        <div class="p-10 bg-slate-50/50 border-t border-slate-100">
+            <div class="flex items-center space-x-5 mb-6">
+                <div id="user-avatar" class="w-16 h-16 bg-white rounded-[1.5rem] flex items-center justify-center text-4xl shadow-2xl border border-slate-100 transition-all duration-700">🥚</div>
+                <div>
+                    <p class="font-extrabold text-slate-900" id="user-title">Novice</p>
+                    <div class="flex items-center text-[10px] font-black text-indigo-500 uppercase tracking-widest">
+                        <span class="bg-indigo-100 px-2 py-0.5 rounded mr-2">LVL <span id="level-val">1</span></span>
+                    </div>
+                </div>
             </div>
-            <p class="text-[9px] text-gray-400 mt-2 font-bold uppercase tracking-widest"><span id="user-xp">450</span> / 1000 XP</p>
+            <div class="space-y-3">
+                <div class="flex justify-between text-[10px] font-black text-slate-400">
+                    <span>XP: <span id="xp-display">450</span>/1000</span>
+                    <span id="xp-percent">45%</span>
+                </div>
+                <div class="h-2.5 w-full bg-slate-200 rounded-full overflow-hidden shadow-inner">
+                    <div id="xp-bar" class="h-full bg-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)] transition-all duration-1000 ease-out" style="width: 45%"></div>
+                </div>
+            </div>
         </div>
     </aside>
 
-    <main class="flex-grow overflow-y-auto bg-[#fcfdfe]">
-        <header class="sticky top-0 z-10 p-6 flex justify-between items-center px-10 bg-white/80 backdrop-blur-md border-b border-gray-100">
-            <p class="text-xs font-black text-gray-400 tracking-widest uppercase italic font-serif">"Write once, run everywhere..."</p>
-            <div id="evolution-alert" class="hidden bg-yellow-100 px-4 py-1 rounded-full text-xs font-bold text-yellow-700 animate-pulse">PET IS EVOLVING! ✨</div>
+    <main class="flex-grow overflow-y-auto bg-slate-50 relative map-container">
+        <svg class="path-svg">
+            <path d="M 400 350 Q 600 350 700 550" fill="none" stroke="#e2e8f0" stroke-width="4" stroke-dasharray="12" />
+        </svg>
+
+        <header class="sticky top-0 z-20 bg-white/70 backdrop-blur-xl p-8 border-b border-slate-200 flex justify-between items-center px-12">
+            <div class="flex items-center space-x-3">
+                <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                <p class="text-xs font-extrabold text-slate-500 uppercase tracking-widest">Chapter 01: The Syntax Forest</p>
+            </div>
+            <div class="flex items-center space-x-12">
+                <div class="text-right">
+                    <p class="text-[9px] font-bold text-slate-400 uppercase">Pet Mood</p>
+                    <p id="pet-mood" class="font-bold text-slate-800 text-sm">Waiting for Code... 💤</p>
+                </div>
+                <div class="px-6 py-2 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                    <p class="text-[10px] font-black text-orange-500">🔥 05 STREAK</p>
+                </div>
+            </div>
         </header>
 
-        <div class="p-10 max-w-7xl mx-auto">
-            <div class="mb-12">
-                <h2 class="text-4xl font-black text-gray-900 tracking-tighter mb-2 italic">Java Odyssey</h2>
-                <p class="text-gray-500 font-medium">Follow the dashed path to unlock your potential.</p>
+        <div class="p-16 max-w-7xl mx-auto relative z-10">
+            <div class="mb-20">
+                <h2 class="text-6xl font-black text-slate-900 tracking-tighter mb-4 italic">Java Odyssey</h2>
+                <p class="text-slate-500 font-medium text-lg italic">"A journey of a thousand bugs begins with a single main method."</p>
             </div>
 
-            <div class="flex flex-wrap gap-10">
-                <div class="quest-card bg-white p-5 rounded-[2.5rem] shadow-sm w-80 border-2 border-transparent hover:border-blue-500" onclick="openQuest('1.1 Hello JVM', 'Print \"Hello, Master!\"')">
-                    <div class="bg-indigo-600 h-40 rounded-[2rem] flex items-center justify-center mb-6">
-                        <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=java" class="w-24 h-24">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+                <div class="quest-node bg-white p-7 rounded-[3.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-100" 
+                     onclick="openQuest('1.1 Hello JVM', 'Requirement: Print \"Hello, JavaQuest!\" using System.out.println', /System\.out\.println\s*\(\s*\"Hello,\s*JavaQuest!\"\s*\)/)">
+                    <div class="bg-indigo-600 h-64 rounded-[3rem] flex items-center justify-center mb-8 relative group overflow-hidden">
+                        <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=java" class="w-32 h-32 z-10 drop-shadow-2xl">
+                        <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </div>
-                    <h4 class="text-xl font-black mb-2">1.1 Hello JVM</h4>
-                    <button class="w-full py-3 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Resume</button>
+                    <div class="px-3">
+                        <span class="text-[10px] font-black text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full uppercase tracking-widest">Current Task</span>
+                        <h3 class="text-2xl font-black mt-4 mb-3 text-slate-800 italic">The First Method</h3>
+                        <p class="text-sm text-slate-400 font-medium mb-8 leading-relaxed">Initialize your virtual self within the byte-code realm.</p>
+                        <button class="w-full py-5 bg-slate-900 text-white rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em] shadow-xl hover:bg-indigo-600 transition-all">Resume Quest</button>
+                    </div>
                 </div>
 
-                <div class="quest-card bg-white p-5 rounded-[2.5rem] shadow-sm w-80 quest-path" onclick="openQuest('1.2 Variables', 'Declare int power = 9000;')">
-                    <div class="bg-emerald-500 h-40 rounded-[2rem] flex items-center justify-center mb-6 text-5xl text-white">🧪</div>
-                    <h4 class="text-xl font-black mb-2">1.2 Alchemy</h4>
-                    <button class="w-full py-3 bg-gray-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest">Start</button>
+                <div class="quest-node bg-white p-7 rounded-[3.5rem] shadow-sm border border-slate-100" 
+                     onclick="openQuest('1.2 Int Alchemy', 'Requirement: Declare an int called \'mana\' and set it to 100.', /int\s+mana\s*=\s*100/)">
+                    <div class="bg-emerald-500 h-64 rounded-[3rem] flex items-center justify-center mb-8 text-7xl shadow-inner shadow-emerald-600/20">🧪</div>
+                    <div class="px-3">
+                        <span class="text-[10px] font-black text-emerald-600 bg-emerald-50 px-4 py-1.5 rounded-full uppercase tracking-widest">Unlocked</span>
+                        <h3 class="text-2xl font-black mt-4 mb-3 text-slate-800 italic">Data Alchemy</h3>
+                        <p class="text-sm text-slate-400 font-medium mb-8 leading-relaxed">Learn to bind magical values into memory containers.</p>
+                        <button class="w-full py-5 bg-slate-100 text-slate-400 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em]">Start Lesson</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 border-4 border-dashed border-slate-200 p-7 rounded-[3.5rem] flex flex-col items-center justify-center opacity-60">
+                    <div class="text-6xl mb-6">🔒</div>
+                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Module 02 Access Required</p>
                 </div>
             </div>
         </div>
     </main>
 
-    <div id="evolutionModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-indigo-900/90 backdrop-blur-xl">
-        <div class="achievement-unlock text-center text-white p-12">
-            <div id="new-pet-icon" class="text-9xl mb-8">🐣</div>
-            <h3 class="text-5xl font-black mb-4 italic tracking-tighter">EVOLUTION!</h3>
-            <p id="evolution-msg" class="text-xl text-indigo-200 mb-10 font-medium italic">Your pet has hatched into a Baby Chick!</p>
-            <button onclick="closeEvolution()" class="bg-white text-indigo-900 px-12 py-4 rounded-2xl font-black tracking-widest hover:bg-green-400 transition-colors">CONTINUE ADVENTURE</button>
+    <div id="editorModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-slate-950/90 backdrop-blur-xl p-12">
+        <div class="bg-white w-full max-w-7xl h-full rounded-[4rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.5)] flex flex-col scale-95 opacity-0 transition-all duration-500" id="modalUI">
+            <div class="p-12 border-b bg-slate-50/50 flex justify-between items-center">
+                <div class="flex items-center space-x-8">
+                    <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-4xl shadow-xl">⚡</div>
+                    <div>
+                        <h3 id="modalTitle" class="text-4xl font-black text-slate-900 tracking-tighter italic">Quest Title</h3>
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em] mt-1">Virtual Compiler Interface</p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="w-16 h-16 flex items-center justify-center rounded-full bg-slate-200/50 text-3xl hover:bg-red-100 hover:text-red-500 transition-all">&times;</button>
+            </div>
+            
+            <div class="flex flex-grow overflow-hidden">
+                <div class="w-1/4 p-12 bg-white border-r overflow-y-auto">
+                    <div class="mb-10">
+                        <h5 class="text-[10px] font-black text-indigo-600 uppercase tracking-[0.2em] mb-4">Objective</h5>
+                        <p id="modalTask" class="text-slate-600 font-semibold leading-relaxed italic text-lg"></p>
+                    </div>
+                    
+                    <div class="p-6 bg-slate-900 rounded-[2rem] text-slate-400 text-xs font-medium space-y-4 shadow-2xl">
+                        <p class="text-white font-bold uppercase text-[9px] tracking-widest text-indigo-400">Documentation</p>
+                        <p>In Java, every program belongs to a <span class="text-emerald-400">class</span>. Statements within the <span class="text-emerald-400">main</span> method run in sequence.</p>
+                        <div class="pt-4 border-t border-slate-800">
+                            <p class="italic text-slate-500">Shortcut: Ctrl + S to save (Simulated)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="w-3/4 flex flex-col bg-[#1e1e1e]">
+                    <div id="monaco-container" class="flex-grow"></div>
+                    <div class="h-64 bg-[#0a0a0a] border-t border-slate-800 flex flex-col">
+                        <div class="p-4 flex justify-between items-center border-b border-white/5 bg-white/5">
+                            <span class="text-[9px] font-black text-slate-500 tracking-[0.3em] uppercase">Debug Console</span>
+                            <span class="text-[9px] font-bold text-green-500 mono uppercase tracking-widest">Runtime Environment: Java 21</span>
+                        </div>
+                        <div id="consoleOut" class="flex-grow p-8 mono text-xs text-slate-400 overflow-y-auto terminal-scroll">
+                            JVM idle. Ready to execute byte-code...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-10 bg-white border-t flex justify-end items-center space-x-12">
+                <div class="text-right">
+                    <p class="text-[9px] font-black text-slate-300 uppercase">Current XP Reward</p>
+                    <p class="text-sm font-black text-emerald-500">+150 XP</p>
+                </div>
+                <button onclick="validateAndRun()" class="px-24 py-6 bg-indigo-600 text-white rounded-[2rem] font-black text-xs uppercase tracking-[0.2em] shadow-[0_12px_0_#4338ca] hover:bg-indigo-500 hover:shadow-[0_8px_0_#4338ca] active:translate-y-2 active:shadow-none transition-all">
+                    Compile & Execute
+                </button>
+            </div>
         </div>
     </div>
 
-    <div id="editorModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-        <div class="bg-white w-full max-w-6xl h-[80vh] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col">
-            <div class="p-8 border-b flex justify-between items-center">
-                <h3 id="modalTitle" class="text-2xl font-black italic">Quest</h3>
-                <button onclick="closeModal()" class="text-3xl font-light hover:rotate-90 transition-transform">&times;</button>
-            </div>
-            <div class="flex flex-grow overflow-hidden">
-                <div class="w-1/4 p-8 border-r overflow-y-auto bg-gray-50/30">
-                    <p id="modalTask" class="text-gray-600 font-medium leading-relaxed"></p>
-                </div>
-                <div class="w-3/4 bg-[#1e1e1e]">
-                    <div id="monaco-container"></div>
-                </div>
-            </div>
-            <div class="p-6 bg-white border-t flex justify-end">
-                <button onclick="runCode()" class="px-16 py-4 bg-green-500 text-white rounded-[1.5rem] font-black tracking-widest shadow-[0_8px_0_#15803d] hover:bg-green-600 active:translate-y-1 active:shadow-none transition-all">COMPILE & EXECUTE</button>
-            </div>
-        </div>
+    <div id="victoryOverlay" class="fixed inset-0 z-[200] hidden flex flex-col items-center justify-center bg-indigo-950/95 backdrop-blur-3xl text-center p-10">
+        <div class="text-[12rem] mb-12 animate-bounce drop-shadow-[0_0_50px_rgba(255,255,255,0.4)]" id="evolvedIcon">🐥</div>
+        <h2 class="text-8xl font-black text-white italic tracking-tighter mb-4 italic">GENESIS COMPLETE!</h2>
+        <p class="text-2xl text-indigo-200 font-medium italic mb-16 max-w-2xl" id="evolvedMessage">Your companion has hatched and gained self-awareness.</p>
+        <button onclick="hideVictory()" class="px-20 py-6 bg-white text-indigo-900 rounded-[2.5rem] font-black tracking-[0.3em] uppercase text-xs hover:bg-green-400 transition-all">Continue Adventure</button>
     </div>
 
     <script>
         let editor;
-        let state = { xp: 450, level: 1 };
+        let activeRegex = null;
+        let state = JSON.parse(localStorage.getItem('javaQuestV3')) || { xp: 450, lvl: 1, pet: 'egg' };
 
-        // 1. 初始化 Monaco Editor
+        // 1. Monaco Setup with Custom Theme
         require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.36.1/min/vs' }});
         require(['vs/editor/editor.main'], function() {
+            monaco.editor.defineTheme('javaQuestTheme', {
+                base: 'vs-dark', inherit: true,
+                rules: [{ token: 'keyword', foreground: '6366f1', fontStyle: 'bold' }],
+                colors: { 'editor.background': '#1e1e1e', 'editor.lineHighlightBackground': '#2d2d2d' }
+            });
+            
             editor = monaco.editor.create(document.getElementById('monaco-container'), {
-                value: "public class Main {\n    public static void main(String[] args) {\n        // Type your code here\n        System.out.println(\"Hello JavaQuest!\");\n    }\n}",
-                language: 'java',
-                theme: 'vs-dark',
-                fontSize: 16,
-                fontFamily: 'monospace',
-                automaticLayout: true,
-                minimap: { enabled: false },
-                roundedSelection: true
+                value: "public class Main {\n    public static void main(String[] args) {\n        // Your journey begins here\n        \n    }\n}",
+                language: 'java', theme: 'javaQuestTheme', fontSize: 16, fontFamily: 'JetBrains Mono',
+                automaticLayout: true, minimap: { enabled: false }, padding: { top: 32 }
             });
         });
 
-        function openQuest(title, task) {
+        function openQuest(title, task, regex) {
             document.getElementById('modalTitle').innerText = title;
             document.getElementById('modalTask').innerText = task;
-            document.getElementById('editorModal').classList.remove('hidden');
-        }
-
-        function closeModal() { document.getElementById('editorModal').classList.add('hidden'); }
-
-        function runCode() {
-            state.xp += 100;
-            updateUI();
-            closeModal();
-            checkEvolution();
-        }
-
-        function updateUI() {
-            document.getElementById('user-xp').innerText = state.xp;
-            document.getElementById('xp-bar').style.width = (state.xp / 1000) * 100 + "%";
-        }
-
-        function checkEvolution() {
-            if (state.xp === 550) {
-                triggerEvolution("🐣", "Your pet has hatched into a Baby Chick!");
-            } else if (state.xp === 750) {
-                triggerEvolution("🦊", "Legendary! Your pet evolved into a Coder Fox!");
-            }
-        }
-
-        function triggerEvolution(icon, msg) {
-            document.getElementById('new-pet-icon').innerText = icon;
-            document.getElementById('evolution-msg').innerText = msg;
-            document.getElementById('evolutionModal').classList.remove('hidden');
+            activeRegex = regex;
             
-            // 更新侧边栏小头像
-            document.getElementById('user-avatar').innerText = icon;
-            document.getElementById('user-avatar').classList.add('scale-150', 'rotate-12');
+            const modal = document.getElementById('editorModal');
+            const modalUI = document.getElementById('modalUI');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modalUI.classList.remove('scale-95', 'opacity-0'); }, 50);
+            
+            document.getElementById('consoleOut').innerHTML = '<span class="text-slate-600">JVM session established. Memory allocated.</span>';
+            document.getElementById('pet-mood').innerText = "Analyzing Code... 🧐";
+        }
+
+        function closeModal() {
+            document.getElementById('modalUI').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => { document.getElementById('editorModal').classList.add('hidden'); }, 300);
+            document.getElementById('pet-mood').innerText = "Idling... 💤";
+        }
+
+        function spawnXP(x, y) {
+            const pop = document.createElement('div');
+            pop.className = 'xp-pop';
+            pop.innerText = '+150 XP';
+            pop.style.left = x + 'px';
+            pop.style.top = y + 'px';
+            document.body.appendChild(pop);
+            setTimeout(() => pop.remove(), 1500);
+        }
+
+        function validateAndRun() {
+            const code = editor.getValue();
+            const consoleBox = document.getElementById('consoleOut');
+            consoleBox.innerHTML += `<br><span class="text-white">Compiling Main.java...</span>`;
+
             setTimeout(() => {
-                document.getElementById('user-avatar').classList.remove('scale-150', 'rotate-12');
+                if (activeRegex.test(code)) {
+                    consoleBox.innerHTML += `<br><span class="text-green-400 font-bold">> Success: Result matches requirements.</span>`;
+                    consoleBox.innerHTML += `<br><span class="text-indigo-400">> Program exited with code 0.</span>`;
+                    
+                    state.xp += 150;
+                    spawnXP(window.innerWidth / 2, window.innerHeight / 2);
+                    saveState();
+                    updateUI();
+                    
+                    if (state.xp >= 600 && state.lvl === 1) {
+                        triggerVictory("🐥", "The shell shatters! A chick is born from the code.");
+                        state.lvl = 2; state.pet = 'chick';
+                    } else if (state.xp >= 900 && state.lvl === 2) {
+                        triggerVictory("🦊", "Evolution complete. Your pet is now a Code Fox.");
+                        state.lvl = 3; state.pet = 'fox';
+                    } else {
+                        setTimeout(closeModal, 1500);
+                    }
+                } else {
+                    consoleBox.innerHTML += `<br><span class="text-red-500 font-bold">> Error: Code does not meet validation criteria.</span>`;
+                    consoleBox.innerHTML += `<br><span class="text-slate-500 italic">Check for exact string matches and semicolons.</span>`;
+                }
             }, 1000);
         }
 
-        function closeEvolution() { document.getElementById('evolutionModal').classList.add('hidden'); }
+        function triggerVictory(icon, msg) {
+            document.getElementById('evolvedIcon').innerText = icon;
+            document.getElementById('evolvedMessage').innerText = msg;
+            document.getElementById('victoryOverlay').classList.remove('hidden');
+            saveState();
+        }
+
+        function hideVictory() { document.getElementById('victoryOverlay').classList.add('hidden'); closeModal(); }
+
+        function saveState() { localStorage.setItem('javaQuestV3', JSON.stringify(state)); }
+
+        function updateUI() {
+            document.getElementById('xp-display').innerText = state.xp;
+            document.getElementById('xp-percent').innerText = Math.min(100, (state.xp/1000)*100).toFixed(0) + "%";
+            document.getElementById('xp-bar').style.width = Math.min(100, (state.xp/1000)*100) + "%";
+            document.getElementById('level-val').innerText = state.lvl;
+            
+            const avatar = document.getElementById('user-avatar');
+            if (state.pet === 'chick') avatar.innerText = "🐥";
+            if (state.pet === 'fox') avatar.innerText = "🦊";
+        }
+
+        window.onload = updateUI;
     </script>
 </body>
 </html>
